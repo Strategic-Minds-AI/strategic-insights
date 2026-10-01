@@ -1,0 +1,30 @@
+{
+  "name": "DomainAction",
+  "type": "object",
+  "properties": {
+    "domain_id": {"type":"string"},
+    "action_type": {"type":"string"},
+    "action_class": {"type":"string","enum":["READ","DRAFT","BRANCH_WRITE","PREVIEW_WRITE","EXTERNAL_WRITE","PROTECTED"],"default":"READ"},
+    "status": {"type":"string","enum":["queued","running","validating","pass","fail","blocked","approval_required","dead_letter"],"default":"queued"},
+    "priority": {"type":"string","enum":["critical","high","normal","low"],"default":"normal"},
+    "due_at": {"type":"string","format":"date-time"},
+    "started_at": {"type":"string","format":"date-time"},
+    "completed_at": {"type":"string","format":"date-time"},
+    "attempt_count": {"type":"number","default":0},
+    "max_attempts": {"type":"number","default":3},
+    "idempotency_key": {"type":"string"},
+    "approval_required": {"type":"boolean","default":false},
+    "approval_id": {"type":"string"},
+    "payload": {"type":"object"},
+    "result": {"type":"object"},
+    "validation_receipt_id": {"type":"string"},
+    "last_error": {"type":"string"}
+  },
+  "required": ["domain_id","action_type","action_class","idempotency_key"],
+  "rls": {
+    "read": true,
+    "create": {"user_condition":{"role":"admin"}},
+    "update": {"user_condition":{"role":"admin"}},
+    "delete": {"user_condition":{"role":"admin"}}
+  }
+}

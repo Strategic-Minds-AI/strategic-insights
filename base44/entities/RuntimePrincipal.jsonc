@@ -1,0 +1,42 @@
+{
+  "name": "RuntimePrincipal",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "title": "Base44 User ID"
+    },
+    "principal_name": {
+      "type": "string",
+      "title": "Principal Name"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["active", "inactive", "revoked"],
+      "default": "inactive"
+    },
+    "scopes": {
+      "type": "array",
+      "items": { "type": "string" },
+      "title": "Allowed Runtime Scopes"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "source_system": {
+      "type": "string",
+      "default": "ZERO_CONTROL_PLANE"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": ["user_id", "status", "scopes"],
+  "rls": {
+    "read": { "user_condition": { "role": "admin" } },
+    "create": { "user_condition": { "role": "admin" } },
+    "update": { "user_condition": { "role": "admin" } },
+    "delete": { "user_condition": { "role": "admin" } }
+  }
+}

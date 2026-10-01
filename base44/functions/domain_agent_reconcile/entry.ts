@@ -9,7 +9,9 @@ export default async function(req) {
 
     const body = await req.json().catch(() => ({}));
     const maxDomains = Math.max(1, Math.min(Number(body.max_domains || 5), 10));
-    const now = new Date().toISOString();
+    const nowMs = Date.now();
+    const now = new Date(nowMs).toISOString();
+    const heartbeatBucket = Math.floor(nowMs / (5 * 60 * 1000));
 
     const due = await base44.asServiceRole.entities.Domain.filter(
       {
@@ -27,7 +29,7 @@ export default async function(req) {
         const run = await base44.functions.invoke('domain_agent_run', {
           domain_id: domain.id,
           mode: 'HEARTBEAT',
-          run_id: 'heartbeat-' + domain.id + '-' + Date.now()
+          run_id: 'heartbeat-' + domain.id + '-' + heartbeatBucket
         });
         results.push({
           domain_id: domain.id,

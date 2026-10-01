@@ -1,13 +1,13 @@
 {
   "name": "Domain Heartbeat",
-  "description": "Daily autonomous pipeline that processes all due domains: crawls sitemaps, reads Search Console + GA4, scans competitors, and generates action items.",
+  "description": "Single five-minute governed heartbeat that processes a bounded batch of due domains through domain_agent_reconcile, which routes every domain through execution ledger and postcondition validation.",
   "trigger": {
     "condition": null,
     "config": {
       "trigger_type": "scheduled",
       "events": [],
       "schedule_mode": "recurring",
-      "cron_expression": "0 6 * * *",
+      "cron_expression": "*/5 * * * *",
       "one_time_date": null,
       "timezone": "America/New_York",
       "interval_value": null,
@@ -22,23 +22,23 @@
     "document": {
       "dsl": "1.0.0",
       "name": "domain_heartbeat",
-      "version": "1.0",
+      "version": "2.0",
       "namespace": "base44"
     },
     "do": [
       {
-        "run_pipeline": {
+        "run_reconciler": {
           "call": "invoke_backend_function",
           "with": {
-            "function_name": "domain_run_pipeline",
+            "function_name": "domain_agent_reconcile",
             "args": {
-              "action": "process_all"
+              "max_domains": 5
             }
           },
           "then": "end",
           "x-base44": {
-            "title": "Process all due domains",
-            "description": "Crawl, read GSC + GA4, scan competitors, generate actions"
+            "title": "Reconcile due domains",
+            "description": "Process a bounded batch through the governed runner and durable validation receipts"
           }
         }
       }

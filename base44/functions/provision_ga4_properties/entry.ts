@@ -11,6 +11,20 @@ export default async function(req) {
 
     const body = await req.json().catch(() => ({}));
     const dryRun = body.dry_run !== false;
+    const approvalId = String(body.approval_id || '');
+
+    if (!dryRun) {
+      if (!approvalId) {
+        return Response.json({ ok:false, blocked:true, reason:'APPROVAL_REQUIRED' }, { status:409 });
+      }
+      const approval = await base44.asServiceRole.entities.DomainApproval.get(approvalId);
+      if (!approval || approval.action_type !== 'CREATE_GA4_PROPERTIES_BULK' || approval.status !== 'executing') {
+        return Response.json({ ok:false, blocked:true, reason:'VALID_EXECUTING_APPROVAL_REQUIRED' }, { status:409 });
+      }
+      if (approval.expires_at && Date.parse(approval.expires_at) <= Date.now()) {
+        return Response.json({ ok:false, blocked:true, reason:'APPROVAL_EXPIRED' }, { status:409 });
+      }
+    }
 
     const { accessToken } = await base44.asServiceRole.connectors.getConnection('google_analytics');
     const authHeader = { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' };

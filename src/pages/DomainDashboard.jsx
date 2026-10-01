@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/components/ui/use-toast';
-import { LayoutDashboard, Globe, FileText, RefreshCw, Send } from 'lucide-react';
+import { LayoutDashboard, Globe, RefreshCw, Send } from 'lucide-react';
 import DomainSwitcher from '@/components/dashboard/DomainSwitcher';
 import DomainDetailPanel from '@/components/dashboard/DomainDetailPanel';
 
@@ -57,15 +57,17 @@ export default function DomainDashboard() {
     if (!activeDomain) return;
     setPushingSitemap(true);
     try {
-      const res = await base44.functions.invoke('push_sitemap_to_gsc', { domain_id: activeDomain.id });
+      const res = await base44.functions.invoke('request_domain_approval', {
+        domain_id: activeDomain.id,
+        action_type: 'SUBMIT_SITEMAP'
+      });
       queryClient.invalidateQueries({ queryKey: ['domains'] });
-      if (res.data?.status === 'success') {
-        toast({ title: 'Sitemap pushed', description: `${activeDomain.domain} sitemap submitted to Search Console.` });
-      } else {
-        toast({ title: 'Sitemap push', description: res.data?.message || res.data?.detail || 'Could not submit — check if a GSC property exists for this domain.', variant: 'destructive' });
-      }
+      toast({
+        title: 'Approval requested',
+        description: `${activeDomain.domain} sitemap submission is queued for operator approval. Approval ID: ${res.data?.approval?.id || 'pending'}`
+      });
     } catch (e) {
-      toast({ title: 'Push failed', description: e.message, variant: 'destructive' });
+      toast({ title: 'Approval request failed', description: e.message, variant: 'destructive' });
     } finally {
       setPushingSitemap(false);
     }
@@ -103,7 +105,7 @@ export default function DomainDashboard() {
                 className="flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 disabled:opacity-50 transition-colors"
               >
                   {pushingSitemap ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-                  {pushingSitemap ? 'Pushing...' : 'Push Sitemap'}
+                  {pushingSitemap ? 'Requesting...' : 'Request Sitemap Submission'}
                 </button>
               <button
                 onClick={handleRescan}

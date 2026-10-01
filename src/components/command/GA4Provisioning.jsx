@@ -16,9 +16,23 @@ export default function GA4Provisioning() {
     setError(null);
     setResult(null);
     try {
-      const res = await base44.functions.invoke('provision_ga4_properties', { dry_run: dryRun });
+      const res = dryRun
+        ? await base44.functions.invoke('provision_ga4_properties', { dry_run: true })
+        : await base44.functions.invoke('request_domain_approval', {
+            action_type: 'CREATE_GA4_PROPERTIES_BULK',
+            scope_type: 'bulk'
+          });
       if (res.error) setError(res.error);
-      else setResult(res);
+      else if (dryRun) setResult(res.data || res);
+      else setResult({
+        approval_required: true,
+        approval_id: res.data?.approval?.id,
+        results: [],
+        total_sites: 0,
+        created: 0,
+        failed: 0,
+        dry_run: false
+      });
     } catch (e) {
       setError(e.message);
     } finally {
@@ -45,7 +59,7 @@ export default function GA4Provisioning() {
             </label>
             <Button size="sm" onClick={run} disabled={loading}>
               {loading ? <Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" /> : <Play className="w-3.5 h-3.5 mr-1" />}
-              {loading ? 'Provisioning...' : 'Provision All'}
+              {loading ? 'Working...' : (dryRun ? 'Preview Provisioning' : 'Request Provisioning Approval')}
             </Button>
           </div>
         </div>
@@ -54,10 +68,15 @@ export default function GA4Provisioning() {
         {error && <p className="text-sm text-red-500">{error}</p>}
         {!result && !loading && !error && (
           <p className="text-sm text-gray-400 text-center py-4">
-            Creates a GA4 property for every tracked site that doesn't have one, then links the property ID back. Toggle off dry run to actually create.
+            Dry run previews missing GA4 properties. Turning dry run off requests operator approval; it does not create Google properties directly.
           </p>
         )}
-        {result && (
+        {result?.approval_required && (
+          <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
+            GA4 provisioning is pending operator approval. Approval ID: <code>{result.approval_id || 'pending'}</code>
+          </div>
+        )}
+        {result && !result.approval_required && (
           <>
             <div className="flex items-center gap-3 text-xs text-gray-500 pb-2 border-b">
               <span>{result.total_sites} sites to provision</span>

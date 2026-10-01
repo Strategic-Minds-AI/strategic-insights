@@ -1,0 +1,22 @@
+{
+  "name": "ProtectedActionReceipt",
+  "type": "object",
+  "properties": {
+    "approval_id": {"type":"string"},
+    "domain_id": {"type":"string"},
+    "action_type": {"type":"string"},
+    "validator": {"type":"string"},
+    "status": {"type":"string","enum":["PASS","FAIL","BLOCKED","UNKNOWN"]},
+    "evidence": {"type":"object"},
+    "failures": {"type":"array","items":{"type":"string"},"default":[]},
+    "warnings": {"type":"array","items":{"type":"string"},"default":[]},
+    "validated_at": {"type":"string","format":"date-time"}
+  },
+  "required": ["approval_id","action_type","validator","status"],
+  "rls": {
+    "read": true,
+    "create": {"user_condition":{"role":"admin"}},
+    "update": {"user_condition":{"role":"admin"}},
+    "delete": {"user_condition":{"role":"admin"}}
+  }
+}

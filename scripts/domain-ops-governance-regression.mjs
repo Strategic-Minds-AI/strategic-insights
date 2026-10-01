@@ -15,6 +15,7 @@ const ga4 = read('base44/functions/provision_ga4_properties/entry.ts');
 const runner = read('base44/functions/domain_agent_run/entry.ts');
 const reconcile = read('base44/functions/domain_agent_reconcile/entry.ts');
 const protectedExec = read('base44/functions/execute_domain_protected_action/entry.ts');
+const autoResolve = read('base44/functions/auto_resolve_actions/entry.ts');
 const protectedValidator = read('base44/functions/protected_action_validator/entry.ts');
 const actionSchema = json('base44/entities/DomainAction.jsonc');
 const mcp = json('base44/mcp/config.json');
@@ -49,6 +50,12 @@ check('heartbeat uses deterministic five-minute bucket',
 
 check('runner reuses duplicate run ids',
   runner.includes('DomainExecution.filter({ run_id:runId }'));
+
+check('auto resolver cannot bypass validator or protected approval',
+  autoResolve.includes("functions.invoke('domain_agent_run'") &&
+  autoResolve.includes("functions.invoke('request_domain_approval'") &&
+  !autoResolve.includes("functions.invoke('push_sitemap_to_gsc'") &&
+  !autoResolve.includes("functions.invoke('domain_run_pipeline'"));
 
 check('protected executor invokes independent validator',
   protectedExec.includes("functions.invoke('protected_action_validator'"));

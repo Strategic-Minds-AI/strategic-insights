@@ -1,0 +1,75 @@
+name: Strategic Minds Independent Validator v2
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
+  push:
+    branches:
+      - "feature/**"
+      - "fix/**"
+      - "build/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: strategic-minds-validator-v2-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: exact-sha-validator-v2
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      VALIDATION_BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+      VALIDATION_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+      VALIDATION_ARTIFACT_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+
+    steps:
+      - name: Checkout exact source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Run independent validator
+        run: npm run validate:independent
+
+      - name: Publish validation summary
+        if: always()
+        shell: bash
+        run: |
+          if [ -f artifacts/validation/summary.md ]; then
+            cat artifacts/validation/summary.md >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "# Strategic Minds Independent Validator v2" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "No validation summary was produced. Branch gate: BLOCKED." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload immutable validation artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: strategic-minds-validation-${{ env.VALIDATION_ARTIFACT_SHA }}
+          path: artifacts/validation/
+          if-no-files-found: error
+          retention-days: 30

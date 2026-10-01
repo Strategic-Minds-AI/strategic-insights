@@ -1,0 +1,28 @@
+{
+  "name": "DomainReceipt",
+  "type": "object",
+  "properties": {
+    "run_id": {"type":"string"},
+    "domain_id": {"type":"string"},
+    "action_id": {"type":"string"},
+    "action_type": {"type":"string"},
+    "validator": {"type":"string"},
+    "status": {"type":"string","enum":["PASS","FAIL","BLOCKED","UNKNOWN"]},
+    "source_sha": {"type":"string"},
+    "environment": {"type":"string"},
+    "evidence": {"type":"object"},
+    "failures": {"type":"array","items":{"type":"string"},"default":[]},
+    "warnings": {"type":"array","items":{"type":"string"},"default":[]},
+    "protected_actions_executed": {"type":"array","items":{"type":"string"},"default":[]},
+    "started_at": {"type":"string","format":"date-time"},
+    "finished_at": {"type":"string","format":"date-time"},
+    "next_action": {"type":"string"}
+  },
+  "required": ["run_id","domain_id","status","validator"],
+  "rls": {
+    "read": true,
+    "create": {"user_condition":{"role":"admin"}},
+    "update": {"user_condition":{"role":"admin"}},
+    "delete": {"user_condition":{"role":"admin"}}
+  }
+}

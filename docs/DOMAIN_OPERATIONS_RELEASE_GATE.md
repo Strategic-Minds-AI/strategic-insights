@@ -10,7 +10,7 @@ REQUEST -> DOMAIN APPROVAL -> OPERATOR DECISION -> PROTECTED EXECUTOR -> INDEPEN
 
 ## Protected actions
 
-Sitemap submission, Search Console property or ownership changes, GA4 creation, GTM changes, DNS verification writes, and production release are blocked unless an unexpired durable approval is present.
+Sitemap submission, bulk or single Search Console property changes, GA4 property/stream creation and related configuration, GTM changes, DNS verification writes, and production release are blocked unless an unexpired durable approval is present.
 
 ## Persistence
 

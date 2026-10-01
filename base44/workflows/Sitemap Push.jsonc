@@ -1,0 +1,50 @@
+{
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "entity",
+      "events": [
+        "create"
+      ],
+      "entity_name": "Domain"
+    }
+  },
+  "description": "When a new domain is registered, automatically push its sitemap to Google Search Console",
+  "name": "Sitemap Push",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "sitemap_push",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "wait_for_crawl": {
+          "wait": "PT2M",
+          "then": "push_sitemap",
+          "x-base44": {
+            "title": "Wait for initial crawl",
+            "description": "Give the domain pipeline time to discover the sitemap"
+          }
+        }
+      },
+      {
+        "push_sitemap": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "push_sitemap_to_gsc",
+            "args": {
+              "domain_id": "${ .trigger.entity_id }"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Push sitemap to Search Console",
+            "description": "Submit the discovered sitemap URL to GSC"
+          }
+        }
+      }
+    ]
+  }
+}

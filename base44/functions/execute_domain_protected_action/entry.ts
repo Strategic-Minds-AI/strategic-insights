@@ -40,6 +40,12 @@ export default async function(req) {
           approval_id:approvalId
         });
         execution = r.data;
+      } else if (approval.action_type === 'CREATE_GSC_PROPERTIES_BULK') {
+        const r = await base44.functions.invoke('provision_gsc_properties', {
+          dry_run:false,
+          approval_id:approvalId
+        });
+        execution = r.data;
       } else {
         execution = { status:'blocked', error:'No protected executor implemented for ' + approval.action_type };
       }
@@ -53,13 +59,14 @@ export default async function(req) {
     });
 
     const passed = validation.data?.status === 'PASS';
-    await svc.entities.DomainApproval.update(approvalId, {
+    const approvalUpdate = {
       status:passed ? 'consumed' : 'failed',
-      consumed_at:passed ? now() : '',
       execution_result:execution,
       validation_receipt_id:validation.data?.receipt_id || '',
       last_error:passed ? '' : (validation.data?.failures || []).join('; ')
-    });
+    };
+    if (passed) approvalUpdate.consumed_at = now();
+    await svc.entities.DomainApproval.update(approvalId, approvalUpdate);
 
     if (approval.domain_id) {
       const actions = await svc.entities.DomainAction.filter({ approval_id:approvalId }, { limit:20 }).catch(() => []);

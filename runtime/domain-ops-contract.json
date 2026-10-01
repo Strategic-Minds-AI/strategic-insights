@@ -1,0 +1,28 @@
+{
+  "schema_version": "1.0",
+  "system": "Strategic Insights - Domain Operations",
+  "intake_command": "ADD DOMAIN: example.com",
+  "heartbeat": {
+    "provider": "Vercel Cron",
+    "schedule": "*/5 * * * *",
+    "path": "/api/reconcile",
+    "single_scheduler": true
+  },
+  "safe_classes": ["READ","DRAFT","BRANCH_WRITE","PREVIEW_WRITE"],
+  "protected_classes": ["EXTERNAL_WRITE","PROTECTED"],
+  "protected_actions": [
+    "ADD_GSC_PROPERTY",
+    "VERIFY_SITE_OWNERSHIP",
+    "SUBMIT_SITEMAP",
+    "CREATE_GA4_PROPERTY",
+    "CREATE_GA4_STREAM",
+    "CONFIGURE_GTM",
+    "PUBLISH_GTM",
+    "DNS_VERIFICATION_WRITE",
+    "PRODUCTION_RELEASE"
+  ],
+  "validator_after_every_execution": true,
+  "implementer_self_certification": false,
+  "evolution_mode": "DRAFT_ONLY",
+  "current_scope_note": "Google connectors remain read-only until explicit operator approval expands permissions and the account is re-consented."
+}

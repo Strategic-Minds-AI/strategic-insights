@@ -17,6 +17,9 @@ const ga4Ui = read('src/components/command/GA4Provisioning.jsx');
 const gscUi = read('src/components/analytics/GSCProvisioningPanel.jsx');
 const runner = read('base44/functions/domain_agent_run/entry.ts');
 const reconcile = read('base44/functions/domain_agent_reconcile/entry.ts');
+const pipeline = read('base44/functions/domain_run_pipeline/entry.ts');
+const domainValidator = read('base44/functions/domain_agent_validator/entry.ts');
+const runtimePrincipal = json('base44/entities/RuntimePrincipal.jsonc');
 const protectedExec = read('base44/functions/execute_domain_protected_action/entry.ts');
 const autoResolve = read('base44/functions/auto_resolve_actions/entry.ts');
 const protectedValidator = read('base44/functions/protected_action_validator/entry.ts');
@@ -60,6 +63,23 @@ check('analytics factory UIs request approval for live writes',
 check('heartbeat uses deterministic five-minute bucket',
   reconcile.includes('heartbeatBucket') &&
   reconcile.includes("run_id: 'heartbeat-' + domain.id + '-' + heartbeatBucket"));
+
+check('runtime principal is admin-managed and scope-based',
+  runtimePrincipal.rls?.read?.user_condition?.role === 'admin' &&
+  runtimePrincipal.rls?.create?.user_condition?.role === 'admin' &&
+  runtimePrincipal.rls?.update?.user_condition?.role === 'admin' &&
+  runtimePrincipal.properties?.scopes?.type === 'array');
+
+check('domain runtime chain requires DOMAIN_RUNTIME scope',
+  [reconcile, runner, pipeline, domainValidator].every(text =>
+    text.includes('RuntimePrincipal') && text.includes('DOMAIN_RUNTIME')
+  ));
+
+check('runtime principal cannot add domains or run bulk pipeline',
+  runner.includes("body.mode !== 'HEARTBEAT'") &&
+  runner.includes('body.domain_url') &&
+  pipeline.includes("action === 'process_all'") &&
+  pipeline.includes('!domain_id || domain_url'));
 
 check('runner reuses duplicate run ids',
   runner.includes('DomainExecution.filter({ run_id:runId }') &&

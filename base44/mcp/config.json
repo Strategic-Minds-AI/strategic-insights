@@ -5,18 +5,12 @@
       {
         "name": "run_strategic_scan",
         "title": "Run Strategic Analytics Skip-Trace",
-        "description": "Searches all connected analytics accounts (Google Analytics, Search Console, Google Sheets, Supabase), auto-detects businesses, fetches metrics from every connected data source, finds performance gaps, and returns AI-generated recommendations on how to close each gap. Call when the user asks for a gap analysis, performance audit, or strategic scan of their businesses.",
+        "description": "Searches all connected analytics accounts (Google Analytics, Search Console, Google Sheets, Supabase), auto-detects businesses, fetches metrics from every connected data source, finds performance gaps, and returns AI-generated recommendations. Call when the user asks for a gap analysis, performance audit, or strategic scan.",
         "input_schema": {
           "type": "object",
           "properties": {
-            "business_id": {
-              "type": "string",
-              "description": "Optional. Limit the scan to a single business by its ID. Omit to scan all businesses."
-            },
-            "force_refresh": {
-              "type": "boolean",
-              "description": "If true, re-fetches fresh data even if a recent snapshot exists. Defaults to false."
-            }
+            "business_id": { "type": "string", "description": "Optional. Limit the scan to a single business by its ID." },
+            "force_refresh": { "type": "boolean", "description": "If true, re-fetches fresh data even if a recent snapshot exists." }
           }
         },
         "handler": "strategic_scan",
@@ -25,12 +19,44 @@
       {
         "name": "list_data_sources",
         "title": "List Connected Data Sources",
-        "description": "Returns all connected data sources (Google Analytics, Search Console, Google Sheets, Google Drive, Supabase, Meta Ads, TikTok) and vault-stored API keys so the AI can see what data is available. Call when the user asks what data sources are connected or what data the AI can see.",
+        "description": "Returns all connected data sources (Google Analytics, Search Console, Google Sheets, Google Drive, Supabase, GitHub) and vault-stored API keys so the AI can see what data is available.",
+        "input_schema": { "type": "object", "properties": {} },
+        "handler": "list_data_sources",
+        "annotations": { "read_only_hint": true, "destructive_hint": false, "idempotent_hint": true }
+      },
+      {
+        "name": "supabase_query",
+        "title": "Query Supabase Database",
+        "description": "Read and write data in your Supabase database. Actions: list_projects (list all projects), get_tables (list tables in a project), read (read rows from a table), write (insert rows into a table). Pass action, project_ref, table, limit, filter, or data as needed.",
         "input_schema": {
           "type": "object",
-          "properties": {}
+          "properties": {
+            "action": { "type": "string", "enum": ["list_projects", "get_tables", "read", "write"], "description": "What to do" },
+            "project_ref": { "type": "string", "description": "Supabase project ref (required for get_tables, read, write)" },
+            "table": { "type": "string", "description": "Table name (required for read, write)" },
+            "limit": { "type": "number", "description": "Max rows to return (default 50)" },
+            "offset": { "type": "number" },
+            "filter": { "type": "string", "description": "PostgREST filter string, e.g. id=eq.123" },
+            "order": { "type": "string", "description": "PostgREST order, e.g. created_at.desc" },
+            "data": { "type": "object", "description": "Row data to insert (for write action)" }
+          }
         },
-        "handler": "list_data_sources",
+        "handler": "supabase_query",
+        "annotations": { "read_only_hint": false, "destructive_hint": false, "idempotent_hint": false }
+      },
+      {
+        "name": "drive_list_files",
+        "title": "List Google Drive Files",
+        "description": "List files in the user's Google Drive, or read a specific file's content. Pass query to search by name, mime_type to filter, or file_id to read content.",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "query": { "type": "string", "description": "Search query for file name" },
+            "mime_type": { "type": "string", "description": "Filter by MIME type" },
+            "file_id": { "type": "string", "description": "Read a specific file's content by ID" }
+          }
+        },
+        "handler": "drive_list_files",
         "annotations": { "read_only_hint": true, "destructive_hint": false, "idempotent_hint": true }
       }
     ]

@@ -12,6 +12,7 @@ export default async function(req) {
       'googlesheets',
       'googledrive',
       'supabase',
+      'github',
       'meta_ads',
       'tiktok',
     ];

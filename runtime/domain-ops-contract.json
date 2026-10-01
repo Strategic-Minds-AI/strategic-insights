@@ -3,9 +3,12 @@
   "system": "Strategic Insights Domain Operations",
   "intake_command": "ADD DOMAIN: example.com",
   "authoritative_scheduler": {
-    "provider": "Vercel Cron",
-    "path": "/api/reconcile",
+    "provider": "ZERO_CONTROL_PLANE",
+    "repository": "Strategic-Minds-AI/x1-ai-hub-control-plane",
+    "vercel_project": "strategic-minds-zero-control-plane",
+    "path": "/api/cron/auto-builder",
     "schedule": "*/5 * * * *",
+    "child_dispatch": "domain_agent_reconcile",
     "single_scheduler_required": true,
     "production_binding_required": true
   },

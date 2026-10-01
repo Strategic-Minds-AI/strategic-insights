@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { createPageUrl } from './utils';
 import { base44 } from '@/api/base44Client';
-import { 
-  LayoutDashboard, 
-  Users, 
-  UserCircle, 
-  Target, 
+import {
+  LayoutDashboard,
+  Users,
+  UserCircle,
+  Target,
   Calendar,
   Activity,
   BarChart3,
@@ -21,6 +21,7 @@ import {
   Globe,
   Command
 } from 'lucide-react';
+import Star3D from '@/components/icons/Star3D';
 import { Avatar } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -77,10 +78,8 @@ export default function Layout({ children, currentPageName }) {
       <div className="hidden md:flex w-64 bg-[#2563eb] text-white flex-col">
         {/* Logo */}
         <div className="p-6 flex items-center gap-3">
-          <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
-            <div className="w-6 h-6 bg-[#2563eb] rounded-full"></div>
-          </div>
-          <span className="text-2xl font-bold">CRM</span>
+          <Star3D size={36} />
+          <span className="text-2xl font-bold">NEO</span>
         </div>
 
         {/* Navigation */}

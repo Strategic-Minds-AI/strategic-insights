@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Radar, RefreshCw, DollarSign, Users, MousePointerClick, Target, Globe, TrendingUp, Award, Activity } from 'lucide-react';
+import Star3D from '@/components/icons/Star3D';
 import MetricCard from '@/components/command/MetricCard';
 import ActionQueue from '@/components/command/ActionQueue';
 import SelfDiscovery from '@/components/command/SelfDiscovery';
@@ -61,9 +62,7 @@ export default function CommandCenter() {
       {/* Header */}
       <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-3">
-          <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 flex items-center justify-center text-white shadow-lg">
-            <Radar className="w-6 h-6" />
-          </div>
+          <Star3D size={40} />
           <div>
             <h1 className="text-xl font-bold text-gray-900">Command Center</h1>
             <p className="text-xs text-gray-400">Self-building intelligence across all your data</p>

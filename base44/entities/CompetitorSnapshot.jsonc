@@ -1,0 +1,77 @@
+{
+  "name": "CompetitorSnapshot",
+  "type": "object",
+  "properties": {
+    "domain_id": {
+      "type": "string"
+    },
+    "competitor_domain": {
+      "type": "string"
+    },
+    "query": {
+      "type": "string"
+    },
+    "rank": {
+      "type": "number"
+    },
+    "title": {
+      "type": "string"
+    },
+    "page_url": {
+      "type": "string"
+    },
+    "schema_types": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "signals": {
+      "type": "object"
+    },
+    "evidence_urls": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "captured_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "provenance": {
+      "type": "string",
+      "enum": [
+        "MEASURED",
+        "PROVIDER",
+        "INFERRED",
+        "UNKNOWN"
+      ],
+      "default": "MEASURED"
+    }
+  },
+  "required": [
+    "domain_id",
+    "competitor_domain"
+  ],
+  "rls": {
+    "read": true,
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

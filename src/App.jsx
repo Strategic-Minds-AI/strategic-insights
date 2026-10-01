@@ -11,6 +11,7 @@ import StrategicAnalytics from './pages/StrategicAnalytics';
 import DeveloperAPI from './pages/DeveloperAPI';
 import Vault from './pages/Vault';
 import DomainOperations from './pages/DomainOperations';
+import CommandCenter from './pages/CommandCenter';
 import OAuthConsent from './pages/OAuthConsent';
 
 const { Pages, Layout, mainPage } = pagesConfig;
@@ -81,6 +82,11 @@ const AuthenticatedApp = () => {
       <Route path="/DomainOperations" element={
         <LayoutWrapper currentPageName="DomainOperations">
           <DomainOperations />
+        </LayoutWrapper>
+      } />
+      <Route path="/CommandCenter" element={
+        <LayoutWrapper currentPageName="CommandCenter">
+          <CommandCenter />
         </LayoutWrapper>
       } />
       <Route path="/oauth/consent" element={<OAuthConsent />} />

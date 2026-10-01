@@ -18,7 +18,8 @@ import {
   Radar,
   Terminal,
   Vault,
-  Globe
+  Globe,
+  Command
 } from 'lucide-react';
 import { Avatar } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
@@ -48,6 +49,7 @@ export default function Layout({ children, currentPageName }) {
   }, []);
 
   const menuItems = [
+    { name: 'Command Center', icon: Command, path: 'CommandCenter' },
     { name: 'Dashboard', icon: LayoutDashboard, path: 'Dashboard' },
     { name: 'Strategic Analytics', icon: Radar, path: 'StrategicAnalytics' },
     { name: 'Domain Ops', icon: Globe, path: 'DomainOperations' },

@@ -12,6 +12,10 @@ const agent = json('base44/agents/domain_operations.jsonc');
 const sitemapWorkflow = json('base44/workflows/Sitemap Push.jsonc');
 const push = read('base44/functions/push_sitemap_to_gsc/entry.ts');
 const ga4 = read('base44/functions/provision_ga4_properties/entry.ts');
+const gsc = read('base44/functions/provision_gsc_properties/entry.ts');
+const ga4Ui = read('src/components/command/GA4Provisioning.jsx');
+const gscUi = read('src/components/analytics/GSCProvisioningPanel.jsx');
+const heartbeatApi = read('api/reconcile.mjs');
 const runner = read('base44/functions/domain_agent_run/entry.ts');
 const reconcile = read('base44/functions/domain_agent_reconcile/entry.ts');
 const protectedExec = read('base44/functions/execute_domain_protected_action/entry.ts');
@@ -44,12 +48,26 @@ check('live GA4 provisioning requires executing approval',
   ga4.includes("approval.action_type !== 'CREATE_GA4_PROPERTIES_BULK'") &&
   ga4.includes("approval.status !== 'executing'"));
 
+check('live GSC provisioning requires executing approval',
+  gsc.includes("approval.action_type !== 'CREATE_GSC_PROPERTIES_BULK'") &&
+  gsc.includes("approval.status !== 'executing'"));
+
+check('analytics factory UIs request approval for live writes',
+  ga4Ui.includes("request_domain_approval") &&
+  ga4Ui.includes("CREATE_GA4_PROPERTIES_BULK") &&
+  gscUi.includes("request_domain_approval") &&
+  gscUi.includes("CREATE_GSC_PROPERTIES_BULK"));
+
 check('heartbeat uses deterministic five-minute bucket',
   reconcile.includes('heartbeatBucket') &&
   reconcile.includes("run_id: 'heartbeat-' + domain.id + '-' + heartbeatBucket"));
 
 check('runner reuses duplicate run ids',
-  runner.includes('DomainExecution.filter({ run_id:runId }'));
+  runner.includes('DomainExecution.filter({ run_id:runId }') &&
+  runner.includes('DUPLICATE_RUN_IN_FLIGHT'));
+
+check('heartbeat permits receiptless in-flight BLOCKED status',
+  heartbeatApi.includes("x.status !== 'BLOCKED'"));
 
 check('auto resolver cannot bypass validator or protected approval',
   autoResolve.includes("functions.invoke('domain_agent_run'") &&

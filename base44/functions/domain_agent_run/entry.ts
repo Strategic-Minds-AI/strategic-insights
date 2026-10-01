@@ -40,6 +40,21 @@ export default async function(req) {
     }
 
     const runId = String(body.run_id || ('domain-run-' + Date.now()));
+    const previous = await svc.entities.DomainExecution.filter({ run_id:runId }, { sort:'-started_at', limit:1 }).catch(() => []);
+    const previousRows = previous.items || previous || [];
+    if (previousRows.length) {
+      const prior = previousRows[0];
+      return Response.json({
+        ok: prior.status === 'PASS',
+        duplicate: true,
+        run_id: runId,
+        execution_id: prior.id,
+        domain_id: domain.id,
+        status: prior.status,
+        validation_receipt_id: prior.validation_receipt_id || null
+      }, { status: prior.status === 'FAIL' || prior.status === 'UNKNOWN' ? 409 : 200 });
+    }
+
     const execution = await svc.entities.DomainExecution.create({
       domain_id: domain.id,
       run_id: runId,

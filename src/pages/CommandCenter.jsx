@@ -11,6 +11,10 @@ import ActionQueue from '@/components/command/ActionQueue';
 import SelfDiscovery from '@/components/command/SelfDiscovery';
 import InsightsPanel from '@/components/command/InsightsPanel';
 import PerformanceTrendChart from '@/components/command/PerformanceTrendChart';
+import CrossSourceInsights from '@/components/command/CrossSourceInsights';
+import AnomalyAlerts from '@/components/command/AnomalyAlerts';
+import NLQueryBar from '@/components/command/NLQueryBar';
+import RevenuePriorityQueue from '@/components/command/RevenuePriorityQueue';
 
 export default function CommandCenter() {
   const [data, setData] = useState(null);
@@ -92,12 +96,22 @@ export default function CommandCenter() {
         <MetricCard label="Domains" value={tl.domains || 0} sublabel={`${tl.competitors_tracked || 0} competitors`} icon={Globe} color="indigo" />
       </div>
 
+      {/* Natural Language Query */}
+      <NLQueryBar />
+
       {/* AI Insights + Action Queue */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-5">
         <div className="lg:col-span-2">
           <InsightsPanel insights={data?.insights} />
         </div>
         <ActionQueue actions={data?.actions || []} alerts={data?.alerts || []} />
+      </div>
+
+      {/* Cross-Source Intelligence + Revenue Priority Queue + Anomaly Detection */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-5">
+        <CrossSourceInsights />
+        <RevenuePriorityQueue />
+        <AnomalyAlerts />
       </div>
 
       {/* 90-Day Performance Trend */}

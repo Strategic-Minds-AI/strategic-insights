@@ -16,9 +16,24 @@ export default function GSCProvisioningPanel() {
     setError(null);
     setResult(null);
     try {
-      const res = await base44.functions.invoke('provision_gsc_properties', { dry_run: dryRun });
-      if (res.error) setError(res.error);
-      else setResult(res);
+      const res = dryRun
+        ? await base44.functions.invoke('provision_gsc_properties', { dry_run: true })
+        : await base44.functions.invoke('request_domain_approval', {
+            action_type: 'CREATE_GSC_PROPERTIES_BULK',
+            scope_type: 'bulk'
+          });
+      const payload = res.data || res;
+      if (payload.error) setError(payload.error);
+      else if (dryRun) setResult(payload);
+      else setResult({
+        approval_required: true,
+        approval_id: payload.approval?.id,
+        results: [],
+        total_sites: 0,
+        added: 0,
+        failed: 0,
+        dry_run: false
+      });
     } catch (e) {
       setError(e.message);
     } finally {
@@ -40,7 +55,7 @@ export default function GSCProvisioningPanel() {
             </label>
             <Button size="sm" onClick={run} disabled={loading}>
               {loading ? <Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" /> : <Play className="w-3.5 h-3.5 mr-1" />}
-              {loading ? 'Adding...' : 'Add All'}
+              {loading ? 'Working...' : (dryRun ? 'Preview Provisioning' : 'Request Provisioning Approval')}
             </Button>
           </div>
         </div>
@@ -49,10 +64,15 @@ export default function GSCProvisioningPanel() {
         {error && <p className="text-sm text-red-500">{error}</p>}
         {!result && !loading && !error && (
           <p className="text-sm text-gray-400 text-center py-4">
-            Adds every untracked site to Google Search Console as a domain-level property.
+            Dry run previews untracked Search Console properties. Turning dry run off creates an operator approval request; it does not add properties directly.
           </p>
         )}
-        {result && (
+        {result?.approval_required && (
+          <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
+            GSC provisioning is pending operator approval. Approval ID: <code>{result.approval_id || 'pending'}</code>
+          </div>
+        )}
+        {result && !result.approval_required && (
           <>
             <div className="flex items-center gap-3 text-xs text-gray-500 pb-2 border-b">
               <span>{result.total_sites} sites to add</span>
@@ -60,7 +80,7 @@ export default function GSCProvisioningPanel() {
               {result.failed > 0 && <Badge variant="destructive" className="text-xs">{result.failed} failed</Badge>}
               {result.dry_run && <Badge variant="outline" className="text-xs">DRY RUN</Badge>}
             </div>
-            {result.results.map((r, i) => (
+            {(result.results || []).map((r, i) => (
               <div key={i} className="flex items-start gap-2 p-2 border rounded-lg">
                 {r.status === 'success' ? <CheckCircle2 className="w-4 h-4 text-green-500 shrink-0 mt-0.5" /> : <XCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />}
                 <div className="min-w-0 flex-1">
@@ -69,7 +89,7 @@ export default function GSCProvisioningPanel() {
                 </div>
               </div>
             ))}
-            {result.results.length === 0 && <p className="text-sm text-gray-400 text-center py-2">All sites already have GSC properties.</p>}
+            {(!result.results || result.results.length === 0) && <p className="text-sm text-gray-400 text-center py-2">All sites already have GSC properties.</p>}
           </>
         )}
       </CardContent>

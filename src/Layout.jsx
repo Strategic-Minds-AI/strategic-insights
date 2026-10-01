@@ -51,6 +51,8 @@ export default function Layout({ children, currentPageName }) {
 
   const menuItems = [
     { name: 'Command Center', icon: Command, path: 'CommandCenter' },
+    { name: 'Domain Dashboard', icon: LayoutDashboard, path: 'DomainDashboard' },
+    { name: 'Growth Insights', icon: BarChart3, path: 'GrowthInsights' },
     { name: 'Dashboard', icon: LayoutDashboard, path: 'Dashboard' },
     { name: 'Strategic Analytics', icon: Radar, path: 'StrategicAnalytics' },
     { name: 'Domain Ops', icon: Globe, path: 'DomainOperations' },

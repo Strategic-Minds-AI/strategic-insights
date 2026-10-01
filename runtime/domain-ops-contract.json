@@ -1,0 +1,29 @@
+{
+  "schema_version": "2.0",
+  "system": "Strategic Insights Domain Operations",
+  "intake_command": "ADD DOMAIN: example.com",
+  "authoritative_scheduler": {
+    "provider": "Vercel Cron",
+    "path": "/api/reconcile",
+    "schedule": "*/5 * * * *",
+    "single_scheduler_required": true,
+    "production_binding_required": true
+  },
+  "safe_classes": ["READ","DRAFT","BRANCH_WRITE","PREVIEW_WRITE"],
+  "protected_actions": [
+    "SUBMIT_SITEMAP",
+    "CREATE_GA4_PROPERTIES_BULK",
+    "ADD_GSC_PROPERTY",
+    "VERIFY_SITE_OWNERSHIP",
+    "CREATE_GA4_STREAM",
+    "CONFIGURE_GTM",
+    "PUBLISH_GTM",
+    "DNS_VERIFICATION_WRITE",
+    "PRODUCTION_RELEASE"
+  ],
+  "protected_flow": "REQUEST -> APPROVE_OR_DENY -> EXECUTE -> INDEPENDENT_VALIDATE -> RECEIPT",
+  "validator_after_every_run": true,
+  "implementer_self_certification": false,
+  "evolution_mode": "DRAFT_ONLY",
+  "local_runtime_role": "READ_ONLY_WATCHDOG_MIRROR"
+}

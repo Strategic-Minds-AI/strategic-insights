@@ -5,7 +5,7 @@
       {
         "name": "run_strategic_scan",
         "title": "Run Strategic Analytics Skip-Trace",
-        "description": "Searches all connected analytics accounts (Google Analytics, Search Console), auto-detects businesses, fetches metrics, finds performance gaps, and returns AI-generated recommendations on how to close each gap. Call when the user asks for a gap analysis, performance audit, or strategic scan of their businesses.",
+        "description": "Searches all connected analytics accounts (Google Analytics, Search Console, Google Sheets, Supabase), auto-detects businesses, fetches metrics from every connected data source, finds performance gaps, and returns AI-generated recommendations on how to close each gap. Call when the user asks for a gap analysis, performance audit, or strategic scan of their businesses.",
         "input_schema": {
           "type": "object",
           "properties": {
@@ -21,6 +21,17 @@
         },
         "handler": "strategic_scan",
         "annotations": { "read_only_hint": false, "destructive_hint": false, "idempotent_hint": true }
+      },
+      {
+        "name": "list_data_sources",
+        "title": "List Connected Data Sources",
+        "description": "Returns all connected data sources (Google Analytics, Search Console, Google Sheets, Google Drive, Supabase, Meta Ads, TikTok) and vault-stored API keys so the AI can see what data is available. Call when the user asks what data sources are connected or what data the AI can see.",
+        "input_schema": {
+          "type": "object",
+          "properties": {}
+        },
+        "handler": "list_data_sources",
+        "annotations": { "read_only_hint": true, "destructive_hint": false, "idempotent_hint": true }
       }
     ]
   }

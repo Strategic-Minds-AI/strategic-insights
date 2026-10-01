@@ -4,6 +4,9 @@
 export const PLATFORMS = [
   { id: "google_analytics", name: "Google Analytics", category: "Web Analytics", icon: "BarChart3", color: "#e8710a", connected: true, description: "Traffic, audience, conversions" },
   { id: "google_search_console", name: "Search Console", category: "SEO", icon: "Search", color: "#4285f4", connected: true, description: "Search queries, indexing, rankings" },
+  { id: "googlesheets", name: "Google Sheets", category: "Data", icon: "FileSpreadsheet", color: "#0f9d58", connected: false, description: "Spreadsheet data, KPIs, custom metrics" },
+  { id: "googledrive", name: "Google Drive", category: "Storage", icon: "HardDrive", color: "#4285f4", connected: false, description: "Files, documents, reports" },
+  { id: "supabase", name: "Supabase", category: "Database", icon: "Database", color: "#3ecf8e", connected: false, description: "Database tables, real-time data" },
   { id: "google_ads", name: "Google Ads", category: "Advertising", icon: "Target", color: "#34a853", connected: false, description: "Search & display ad performance" },
   { id: "meta_ads", name: "Meta Ads", category: "Advertising", icon: "Facebook", color: "#1877f2", connected: false, description: "Facebook & Instagram ad ROI" },
   { id: "ga4_events", name: "GA4 Events", category: "Tracking", icon: "Zap", color: "#f9ab00", connected: false, description: "Custom event & conversion tracking" },

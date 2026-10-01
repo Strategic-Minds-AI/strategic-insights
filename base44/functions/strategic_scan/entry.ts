@@ -112,6 +112,24 @@ async function scQuery(token, siteUrl) {
   return { topQueries: rows, totalClicks, totalImpressions, avgPosition };
 }
 
+async function sheetsListSpreadsheets(token) {
+  const res = await fetch('https://www.googleapis.com/drive/v3/files?q=mimeType%3D%22application%2Fvnd.google-apps.spreadsheet%22&pageSize=10', {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) return [];
+  const data = await res.json();
+  return (data.files || []).map(f => ({ id: f.id, name: f.name }));
+}
+
+async function sheetsReadSample(token, spreadsheetId) {
+  const res = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/A1:Z50`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) return null;
+  const data = await res.json();
+  return data.values || [];
+}
+
 // ── Main handler ───────────────────────────────────────────────────
 export default async function(req) {
   try {
@@ -123,13 +141,15 @@ export default async function(req) {
     const singleBusinessId = body.business_id || null;
 
     // 1. Pull connections
-    const [gaConn, scConn] = await Promise.all([
+    const [gaConn, scConn, sheetsConn] = await Promise.all([
       base44.asServiceRole.connectors.getConnection('google_analytics').catch(() => null),
       base44.asServiceRole.connectors.getConnection('google_search_console').catch(() => null),
+      base44.asServiceRole.connectors.getConnection('googlesheets').catch(() => null),
     ]);
 
     const gaToken = gaConn?.accessToken;
     const scToken = scConn?.accessToken;
+    const sheetsToken = sheetsConn?.accessToken;
 
     // 2. Auto-detect businesses from connected accounts
     const [gaProperties, scSites] = await Promise.all([
@@ -202,6 +222,29 @@ export default async function(req) {
 
       // Save snapshots
       const now = new Date().toISOString();
+
+      // Fetch Google Sheets data if connected
+      let sheetsData = null;
+      if (sheetsToken) {
+        try {
+          const spreadsheets = await sheetsListSpreadsheets(sheetsToken);
+          if (spreadsheets.length > 0) {
+            const rows = await sheetsReadSample(sheetsToken, spreadsheets[0].id);
+            sheetsData = { spreadsheet: spreadsheets[0].name, sampleRows: rows };
+            await base44.entities.AnalyticsSnapshot.create({
+              business_id: biz.id, source: 'google_sheets',
+              metrics: { spreadsheet: spreadsheets[0].name, rows },
+              period_start: dateNDaysAgo(28), period_end: dateNDaysAgo(1), fetched_at: now,
+            });
+          }
+        } catch {}
+      }
+
+      // Read vault entries for additional data source awareness
+      const vaultPage = await base44.entities.VaultEntry.filter({ status: 'active' }, { limit: 50 }).catch(() => ({}));
+      const vaultEntries = vaultPage.items || vaultPage || [];
+      const vaultSourceNames = vaultEntries.map(v => `${v.service}/${v.key_name}`);
+
       if (gaData) {
         await base44.entities.AnalyticsSnapshot.create({
           business_id: biz.id, source: 'google_analytics',
@@ -228,6 +271,12 @@ Top channels: ${gaData ? JSON.stringify(gaData.rows?.slice(0, 5)) : 'N/A'}
 GOOGLE SEARCH CONSOLE (last 28 days):
 ${scData ? `Clicks: ${scData.totalClicks}, Impressions: ${scData.totalImpressions}, Avg Position: ${scData.avgPosition?.toFixed(1)}` : 'Not connected — this is a GAP: Search Console is not verified for this business.'}
 Top queries: ${scData ? JSON.stringify(scData.topQueries?.slice(0, 8)) : 'N/A'}
+
+GOOGLE SHEETS:
+${sheetsData ? `Spreadsheet: ${sheetsData.spreadsheet}, Sample rows: ${JSON.stringify(sheetsData.sampleRows?.slice(0, 5))}` : 'Not connected'}
+
+ADDITIONAL DATA SOURCES (from Vault):
+${vaultSourceNames.length > 0 ? vaultSourceNames.join(', ') : 'None configured'}
 
 Identify the TOP 5 most impactful gaps in this business's analytics, SEO, conversion, and tracking setup. For each gap return:
 - title: short name

@@ -9,6 +9,7 @@ import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import StrategicAnalytics from './pages/StrategicAnalytics';
 import DeveloperAPI from './pages/DeveloperAPI';
+import Vault from './pages/Vault';
 import OAuthConsent from './pages/OAuthConsent';
 
 const { Pages, Layout, mainPage } = pagesConfig;
@@ -69,6 +70,11 @@ const AuthenticatedApp = () => {
       <Route path="/DeveloperAPI" element={
         <LayoutWrapper currentPageName="DeveloperAPI">
           <DeveloperAPI />
+        </LayoutWrapper>
+      } />
+      <Route path="/Vault" element={
+        <LayoutWrapper currentPageName="Vault">
+          <Vault />
         </LayoutWrapper>
       } />
       <Route path="/oauth/consent" element={<OAuthConsent />} />

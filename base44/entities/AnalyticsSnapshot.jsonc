@@ -13,7 +13,9 @@
         "google_search_console",
         "meta_ads",
         "google_ads",
-        "ai_web_search"
+        "ai_web_search",
+        "google_sheets",
+        "supabase"
       ],
       "title": "Data Source"
     },

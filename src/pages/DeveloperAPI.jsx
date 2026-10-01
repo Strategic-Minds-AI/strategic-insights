@@ -60,6 +60,7 @@ export default function DeveloperAPI() {
                   <li className="flex items-start gap-2"><Badge className="bg-blue-100 text-blue-700 text-xs">Entity</Badge> <code className="text-xs">query_business</code> — List and filter your businesses.</li>
                   <li className="flex items-start gap-2"><Badge className="bg-blue-100 text-blue-700 text-xs">Entity</Badge> <code className="text-xs">query_gap</code> — List detected gaps with AI recommendations.</li>
                   <li className="flex items-start gap-2"><Badge className="bg-blue-100 text-blue-700 text-xs">Entity</Badge> <code className="text-xs">query_analyticssnapshot</code> — Read raw analytics metrics per business.</li>
+                  <li className="flex items-start gap-2"><Badge className="bg-violet-100 text-violet-700 text-xs">Tool</Badge> <code className="text-xs">list_data_sources</code> — List all connected data sources and vault-stored API keys.</li>
                 </ul>
               </div>
               <div className="text-sm text-gray-600">

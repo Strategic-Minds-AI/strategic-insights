@@ -16,7 +16,8 @@ import {
   Bell,
   Settings,
   Radar,
-  Terminal
+  Terminal,
+  Vault
 } from 'lucide-react';
 import { Avatar } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
@@ -57,6 +58,7 @@ export default function Layout({ children, currentPageName }) {
   ];
 
   const bottomMenuItems = [
+    { name: 'Vault', icon: Vault, path: 'Vault' },
     { name: 'Developer', icon: Terminal, path: 'DeveloperAPI' },
     { name: 'Settings', icon: Settings, path: 'Settings' }
   ];

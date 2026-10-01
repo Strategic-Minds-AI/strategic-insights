@@ -9,10 +9,16 @@
     "single_scheduler_required": true,
     "production_binding_required": true
   },
-  "safe_classes": ["READ","DRAFT","BRANCH_WRITE","PREVIEW_WRITE"],
+  "safe_classes": [
+    "READ",
+    "DRAFT",
+    "BRANCH_WRITE",
+    "PREVIEW_WRITE"
+  ],
   "protected_actions": [
     "SUBMIT_SITEMAP",
     "CREATE_GA4_PROPERTIES_BULK",
+    "CREATE_GSC_PROPERTIES_BULK",
     "ADD_GSC_PROPERTY",
     "VERIFY_SITE_OWNERSHIP",
     "CREATE_GA4_STREAM",

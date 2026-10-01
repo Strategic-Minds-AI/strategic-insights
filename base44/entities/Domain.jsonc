@@ -1,0 +1,97 @@
+{
+  "name": "Domain",
+  "type": "object",
+  "properties": {
+    "domain": {
+      "type": "string",
+      "title": "Domain"
+    },
+    "url": {
+      "type": "string",
+      "title": "Canonical URL"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "onboarding",
+        "active",
+        "paused",
+        "error"
+      ],
+      "default": "pending",
+      "title": "Status"
+    },
+    "gsc_property": {
+      "type": "string",
+      "title": "Search Console Property"
+    },
+    "ga4_property_id": {
+      "type": "string",
+      "title": "GA4 Property ID"
+    },
+    "sitemap_url": {
+      "type": "string",
+      "title": "Sitemap URL"
+    },
+    "sitemap_status": {
+      "type": "string",
+      "title": "Sitemap Status"
+    },
+    "robots_txt": {
+      "type": "string",
+      "title": "Robots.txt"
+    },
+    "page_count": {
+      "type": "number",
+      "title": "Discovered Pages"
+    },
+    "competitors": {
+      "type": "string",
+      "title": "Competitors (JSON)"
+    },
+    "target_keywords": {
+      "type": "string",
+      "title": "Target Keywords (JSON)"
+    },
+    "last_scan_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Last Scan At"
+    },
+    "next_scan_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Next Scan At"
+    },
+    "last_error": {
+      "type": "string",
+      "title": "Last Error"
+    },
+    "health_score": {
+      "type": "number",
+      "title": "Health Score"
+    }
+  },
+  "required": [
+    "domain"
+  ],
+  "rls": {
+    "read": true,
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

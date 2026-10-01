@@ -1,0 +1,65 @@
+{
+  "name": "CompetitorScan",
+  "type": "object",
+  "properties": {
+    "domain_id": {
+      "type": "string",
+      "title": "Domain ID"
+    },
+    "domain": {
+      "type": "string",
+      "title": "Domain"
+    },
+    "competitor_url": {
+      "type": "string",
+      "title": "Competitor URL"
+    },
+    "competitor_name": {
+      "type": "string",
+      "title": "Competitor Name"
+    },
+    "findings": {
+      "type": "string",
+      "title": "Findings (JSON)"
+    },
+    "content_gaps": {
+      "type": "string",
+      "title": "Content Gaps"
+    },
+    "keyword_gaps": {
+      "type": "string",
+      "title": "Keyword Gaps"
+    },
+    "strengths": {
+      "type": "string",
+      "title": "Competitor Strengths"
+    },
+    "scanned_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Scanned At"
+    }
+  },
+  "required": [
+    "domain_id",
+    "competitor_url"
+  ],
+  "rls": {
+    "read": true,
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

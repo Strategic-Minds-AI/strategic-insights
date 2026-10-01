@@ -10,6 +10,7 @@ import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import StrategicAnalytics from './pages/StrategicAnalytics';
 import DeveloperAPI from './pages/DeveloperAPI';
 import Vault from './pages/Vault';
+import DomainOperations from './pages/DomainOperations';
 import OAuthConsent from './pages/OAuthConsent';
 
 const { Pages, Layout, mainPage } = pagesConfig;
@@ -75,6 +76,11 @@ const AuthenticatedApp = () => {
       <Route path="/Vault" element={
         <LayoutWrapper currentPageName="Vault">
           <Vault />
+        </LayoutWrapper>
+      } />
+      <Route path="/DomainOperations" element={
+        <LayoutWrapper currentPageName="DomainOperations">
+          <DomainOperations />
         </LayoutWrapper>
       } />
       <Route path="/oauth/consent" element={<OAuthConsent />} />

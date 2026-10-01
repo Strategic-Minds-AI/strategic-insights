@@ -1,0 +1,60 @@
+{
+  "name": "DomainMetric",
+  "type": "object",
+  "properties": {
+    "domain_id": {
+      "type": "string",
+      "title": "Domain ID"
+    },
+    "domain": {
+      "type": "string",
+      "title": "Domain"
+    },
+    "date": {
+      "type": "string",
+      "format": "date",
+      "title": "Date"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "google_search_console",
+        "google_analytics",
+        "competitor_scan",
+        "index_check"
+      ],
+      "title": "Source"
+    },
+    "metrics": {
+      "type": "object",
+      "title": "Metrics JSON"
+    },
+    "summary": {
+      "type": "string",
+      "title": "Summary"
+    }
+  },
+  "required": [
+    "domain_id",
+    "domain",
+    "source"
+  ],
+  "rls": {
+    "read": true,
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

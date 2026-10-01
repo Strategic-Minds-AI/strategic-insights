@@ -1,0 +1,96 @@
+{
+  "name": "DomainAction",
+  "type": "object",
+  "properties": {
+    "domain_id": {
+      "type": "string",
+      "title": "Domain ID"
+    },
+    "domain": {
+      "type": "string",
+      "title": "Domain"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "seo",
+        "technical",
+        "content",
+        "indexing",
+        "tracking",
+        "competitor",
+        "performance"
+      ],
+      "title": "Action Type"
+    },
+    "title": {
+      "type": "string",
+      "title": "Title"
+    },
+    "description": {
+      "type": "string",
+      "title": "Description"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "critical",
+        "high",
+        "medium",
+        "low"
+      ],
+      "default": "medium",
+      "title": "Priority"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "in_progress",
+        "resolved",
+        "dismissed"
+      ],
+      "default": "open",
+      "title": "Status"
+    },
+    "ai_recommendation": {
+      "type": "string",
+      "title": "AI Recommendation"
+    },
+    "ai_action_steps": {
+      "type": "string",
+      "title": "Action Steps (JSON)"
+    },
+    "estimated_impact": {
+      "type": "string",
+      "title": "Estimated Impact"
+    },
+    "created_at_scan": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Created At Scan"
+    }
+  },
+  "required": [
+    "domain_id",
+    "title"
+  ],
+  "rls": {
+    "read": true,
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

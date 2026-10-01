@@ -9,6 +9,7 @@ import { Radar, RefreshCw, Sparkles, TrendingUp, Globe, Search, Zap } from 'luci
 import BusinessSwitcher from '@/components/strategic/BusinessSwitcher';
 import PlatformGrid from '@/components/strategic/PlatformGrid';
 import GapList from '@/components/strategic/GapList';
+import ForecastPanel from '@/components/strategic/ForecastPanel';
 import { PLATFORMS } from '@/lib/platforms';
 
 export default function StrategicAnalytics() {
@@ -44,7 +45,7 @@ export default function StrategicAnalytics() {
     queryKey: ['strategic-snapshots', selectedBusinessId],
     queryFn: async () => {
       if (!selectedBusinessId) return [];
-      const res = await base44.entities.AnalyticsSnapshot.filter({ business_id: selectedBusinessId }, { sort: '-fetched_at', limit: 10 });
+      const res = await base44.entities.AnalyticsSnapshot.filter({ business_id: selectedBusinessId }, { sort: 'fetched_at', limit: 50 });
       return res.items || res;
     },
     enabled: !!selectedBusinessId,
@@ -160,6 +161,14 @@ export default function StrategicAnalytics() {
           </AlertDescription>
         </Alert>
       )}
+
+      {/* Growth Forecast */}
+      <div className="mb-6">
+        <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2 mb-3">
+          <TrendingUp className="w-5 h-5 text-violet-600" /> Growth Forecast
+        </h3>
+        <ForecastPanel snapshots={snapshots} />
+      </div>
 
       {/* Gap Analysis */}
       <div className="mb-4 flex items-center justify-between">

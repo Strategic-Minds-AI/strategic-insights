@@ -1,14 +1,17 @@
 import React, { useState, useMemo } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { LayoutDashboard, Globe } from 'lucide-react';
+import { useToast } from '@/components/ui/use-toast';
+import { LayoutDashboard, Globe, FileText, RefreshCw, Send } from 'lucide-react';
 import DomainSwitcher from '@/components/dashboard/DomainSwitcher';
 import DomainDetailPanel from '@/components/dashboard/DomainDetailPanel';
 
 export default function DomainDashboard() {
   const queryClient = useQueryClient();
+  const { toast } = useToast();
   const [selectedId, setSelectedId] = useState(null);
   const [rescanning, setRescanning] = useState(false);
+  const [pushingSitemap, setPushingSitemap] = useState(false);
 
   const { data: domains = [], isLoading } = useQuery({
     queryKey: ['domains'],
@@ -42,8 +45,29 @@ export default function DomainDashboard() {
       await base44.functions.invoke('domain_agent_run', { domain_id: activeDomain.id });
       queryClient.invalidateQueries({ queryKey: ['domains'] });
       queryClient.invalidateQueries({ queryKey: ['domain-metrics', activeId] });
+      toast({ title: 'Analytics refreshed', description: `${activeDomain.domain} data updated.` });
+    } catch (e) {
+      toast({ title: 'Refresh failed', description: e.message, variant: 'destructive' });
     } finally {
       setRescanning(false);
+    }
+  };
+
+  const handlePushSitemap = async () => {
+    if (!activeDomain) return;
+    setPushingSitemap(true);
+    try {
+      const res = await base44.functions.invoke('push_sitemap_to_gsc', { domain_id: activeDomain.id });
+      queryClient.invalidateQueries({ queryKey: ['domains'] });
+      if (res.data?.status === 'success') {
+        toast({ title: 'Sitemap pushed', description: `${activeDomain.domain} sitemap submitted to Search Console.` });
+      } else {
+        toast({ title: 'Sitemap push', description: res.data?.message || res.data?.detail || 'Could not submit — check if a GSC property exists for this domain.', variant: 'destructive' });
+      }
+    } catch (e) {
+      toast({ title: 'Push failed', description: e.message, variant: 'destructive' });
+    } finally {
+      setPushingSitemap(false);
     }
   };
 
@@ -69,6 +93,29 @@ export default function DomainDashboard() {
       ) : (
         <>
           <DomainSwitcher domains={domains} selectedId={activeId} onSelect={d => setSelectedId(d.id)} />
+
+          {/* One-click actions */}
+          {activeDomain && (
+            <div className="flex gap-2 mt-4">
+              <button
+                onClick={handlePushSitemap}
+                disabled={pushingSitemap}
+                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 disabled:opacity-50 transition-colors"
+              >
+                  {pushingSitemap ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                  {pushingSitemap ? 'Pushing...' : 'Push Sitemap'}
+                </button>
+              <button
+                onClick={handleRescan}
+                disabled={rescanning}
+                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white border border-gray-200 text-gray-700 text-sm font-medium hover:border-indigo-300 hover:text-indigo-600 disabled:opacity-50 transition-colors"
+              >
+                {rescanning ? <RefreshCw className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
+                {rescanning ? 'Refreshing...' : 'Refresh Analytics'}
+              </button>
+            </div>
+          )}
+
           <div className="mt-4">
             <DomainDetailPanel
               domain={activeDomain}

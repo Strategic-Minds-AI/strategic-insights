@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/components/ui/use-toast';
-import { LayoutDashboard, Globe, FileText, RefreshCw, Send } from 'lucide-react';
+import { LayoutDashboard, Globe, RefreshCw, Send } from 'lucide-react';
 import DomainSwitcher from '@/components/dashboard/DomainSwitcher';
 import DomainDetailPanel from '@/components/dashboard/DomainDetailPanel';
 

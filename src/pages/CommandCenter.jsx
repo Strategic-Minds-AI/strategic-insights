@@ -16,6 +16,7 @@ import AnomalyAlerts from '@/components/command/AnomalyAlerts';
 import NLQueryBar from '@/components/command/NLQueryBar';
 import RevenuePriorityQueue from '@/components/command/RevenuePriorityQueue';
 import AutonomousExecution from '@/components/command/AutonomousExecution';
+import GA4Provisioning from '@/components/command/GA4Provisioning';
 
 export default function CommandCenter() {
   const [data, setData] = useState(null);
@@ -115,9 +116,10 @@ export default function CommandCenter() {
         <AnomalyAlerts />
       </div>
 
-      {/* Autonomous Execution */}
-      <div className="mb-5">
+      {/* Autonomous Execution + GA4 Provisioning */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-5">
         <AutonomousExecution />
+        <GA4Provisioning />
       </div>
 
       {/* 90-Day Performance Trend */}

@@ -7,12 +7,23 @@ export default async function(req) {
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
     const body = await req.json().catch(() => ({}));
-    const { domain_id } = body;
+    const { domain_id, approval_id } = body;
 
     if (!domain_id) return Response.json({ error: 'domain_id is required' }, { status: 400 });
 
     const domain = await base44.entities.Domain.get(domain_id);
     if (!domain) return Response.json({ error: 'Domain not found' }, { status: 404 });
+
+    if (!approval_id) {
+      return Response.json({ ok:false, blocked:true, reason:'APPROVAL_REQUIRED' }, { status:409 });
+    }
+    const approval = await base44.asServiceRole.entities.DomainApproval.get(String(approval_id));
+    if (!approval || approval.action_type !== 'SUBMIT_SITEMAP' || approval.domain_id !== domain_id || approval.status !== 'executing') {
+      return Response.json({ ok:false, blocked:true, reason:'VALID_EXECUTING_APPROVAL_REQUIRED' }, { status:409 });
+    }
+    if (approval.expires_at && Date.parse(approval.expires_at) <= Date.now()) {
+      return Response.json({ ok:false, blocked:true, reason:'APPROVAL_EXPIRED' }, { status:409 });
+    }
 
     const baseUrl = domain.url || `https://${domain.domain}`;
     const sitemapUrl = domain.sitemap_url || `${baseUrl}/sitemap.xml`;

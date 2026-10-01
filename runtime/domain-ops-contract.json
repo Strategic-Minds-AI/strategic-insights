@@ -1,0 +1,49 @@
+{
+  "schema_version": "2.0",
+  "system": "Strategic Insights Domain Operations",
+  "intake_command": "ADD DOMAIN: example.com",
+  "authoritative_scheduler": {
+    "provider": "ZERO_CONTROL_PLANE",
+    "repository": "Strategic-Minds-AI/x1-ai-hub-control-plane",
+    "vercel_project": "strategic-minds-zero-control-plane",
+    "path": "/api/cron/auto-builder",
+    "schedule": "*/5 * * * *",
+    "child_dispatch": "domain_agent_reconcile",
+    "single_scheduler_required": true,
+    "production_binding_required": true
+  },
+  "safe_classes": [
+    "READ",
+    "DRAFT",
+    "BRANCH_WRITE",
+    "PREVIEW_WRITE"
+  ],
+  "protected_actions": [
+    "SUBMIT_SITEMAP",
+    "CREATE_GA4_PROPERTIES_BULK",
+    "CREATE_GSC_PROPERTIES_BULK",
+    "ADD_GSC_PROPERTY",
+    "VERIFY_SITE_OWNERSHIP",
+    "CREATE_GA4_STREAM",
+    "CONFIGURE_GTM",
+    "PUBLISH_GTM",
+    "DNS_VERIFICATION_WRITE",
+    "PRODUCTION_RELEASE"
+  ],
+  "protected_flow": "REQUEST -> APPROVE_OR_DENY -> EXECUTE -> INDEPENDENT_VALIDATE -> RECEIPT",
+  "validator_after_every_run": true,
+  "implementer_self_certification": false,
+  "evolution_mode": "DRAFT_ONLY",
+  "local_runtime_role": "READ_ONLY_WATCHDOG_MIRROR",
+  "runtime_identity": {
+    "provider": "Base44",
+    "app_id": "6abe11ad28a5bc92c394164f",
+    "api_auth": "Bearer Base44 user access token",
+    "principal_entity": "RuntimePrincipal",
+    "required_scope": "DOMAIN_RUNTIME",
+    "dedicated_non_admin_user_required": true,
+    "personal_admin_credential_reuse_allowed": false,
+    "principal_provisioned": false,
+    "durable_token_lifecycle_verified": false
+  }
+}

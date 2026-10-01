@@ -9,39 +9,40 @@
       "entity_name": "Domain"
     }
   },
-  "description": "When a new domain is registered, automatically push its sitemap to Google Search Console",
-  "name": "Sitemap Push",
+  "description": "When a new domain is registered, queue sitemap submission for explicit operator approval. This workflow never writes to Google directly.",
+  "name": "Sitemap Approval Queue",
   "definition": {
     "document": {
       "dsl": "1.0.0",
-      "name": "sitemap_push",
-      "version": "1.0",
+      "name": "sitemap_approval_queue",
+      "version": "2.0",
       "namespace": "base44"
     },
     "do": [
       {
         "wait_for_crawl": {
           "wait": "PT2M",
-          "then": "push_sitemap",
+          "then": "request_approval",
           "x-base44": {
             "title": "Wait for initial crawl",
-            "description": "Give the domain pipeline time to discover the sitemap"
+            "description": "Give the safe domain pipeline time to discover the sitemap"
           }
         }
       },
       {
-        "push_sitemap": {
+        "request_approval": {
           "call": "invoke_backend_function",
           "with": {
-            "function_name": "push_sitemap_to_gsc",
+            "function_name": "request_domain_approval",
             "args": {
-              "domain_id": "${ .trigger.entity_id }"
+              "domain_id": "${ .trigger.entity_id }",
+              "action_type": "SUBMIT_SITEMAP"
             }
           },
           "then": "end",
           "x-base44": {
-            "title": "Push sitemap to Search Console",
-            "description": "Submit the discovered sitemap URL to GSC"
+            "title": "Request sitemap approval",
+            "description": "Queue protected Search Console sitemap submission; do not execute it automatically"
           }
         }
       }

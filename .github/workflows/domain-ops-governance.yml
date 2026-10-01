@@ -1,0 +1,29 @@
+name: Domain Ops Governance
+
+on:
+  pull_request:
+    paths:
+      - 'base44/**'
+      - 'api/**'
+      - 'runtime/**'
+      - 'scripts/domain-ops-governance-regression.mjs'
+      - 'vercel.json'
+      - 'src/pages/DomainDashboard.jsx'
+      - 'src/components/command/GA4Provisioning.jsx'
+      - 'package.json'
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run test:domain-ops-governance
+      - run: npm run build

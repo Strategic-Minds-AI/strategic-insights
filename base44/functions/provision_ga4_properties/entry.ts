@@ -11,6 +11,18 @@ export default async function(req) {
 
     const body = await req.json().catch(() => ({}));
     const dryRun = body.dry_run !== false;
+    const approvalId = String(body.approval_id || '');
+
+    if (!dryRun) {
+      if (!approvalId) return Response.json({ ok:false, blocked:true, reason:'APPROVAL_REQUIRED' }, { status:409 });
+      const approval = await base44.asServiceRole.entities.DomainApproval.get(approvalId);
+      if (!approval || approval.action_type !== 'CREATE_GA4_PROPERTIES_BULK' || approval.status !== 'executing') {
+        return Response.json({ ok:false, blocked:true, reason:'VALID_EXECUTING_APPROVAL_REQUIRED' }, { status:409 });
+      }
+      if (approval.expires_at && Date.parse(approval.expires_at) <= Date.now()) {
+        return Response.json({ ok:false, blocked:true, reason:'APPROVAL_EXPIRED' }, { status:409 });
+      }
+    }
 
     const { accessToken } = await base44.asServiceRole.connectors.getConnection('google_analytics');
     const authHeader = { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' };
@@ -80,6 +92,7 @@ export default async function(req) {
         }
 
         const numericId = created.name.replace('properties/', '');
+        const postCreateFailures = [];
 
         // 2. Create a web data stream
         let streamId = null;
@@ -95,24 +108,28 @@ export default async function(req) {
           if (streamRes.ok) {
             streamId = streamData.name?.split('/').pop();
             measurementId = streamData.webStreamData?.measurementId;
+          } else {
+            postCreateFailures.push('WEB_STREAM_CREATE_FAILED:' + streamRes.status);
           }
-        } catch (e) { /* stream creation is best-effort */ }
+        } catch (e) { postCreateFailures.push('WEB_STREAM_CREATE_ERROR:' + e.message); }
 
         // 3. Set data retention to 14 months
         try {
-          await fetch(`https://analyticsadmin.googleapis.com/v1beta/properties/${numericId}`, {
+          const retentionRes = await fetch(`https://analyticsadmin.googleapis.com/v1beta/properties/${numericId}`, {
             method: 'PATCH', headers: { ...authHeader, 'Content-Type': 'application/json' },
             body: JSON.stringify({ retentionSettings: { retentionDuration: 'FOURTEEN_MONTHS' } }),
           });
-        } catch (e) { /* best-effort */ }
+          if (!retentionRes.ok) postCreateFailures.push('RETENTION_UPDATE_FAILED:' + retentionRes.status);
+        } catch (e) { postCreateFailures.push('RETENTION_UPDATE_ERROR:' + e.message); }
 
         // 4. Enable Google Signals
         try {
-          await fetch(`https://analyticsadmin.googleapis.com/v1beta/properties/${numericId}/googleSignalsSettings?updateMask=consent`, {
+          const signalsRes = await fetch(`https://analyticsadmin.googleapis.com/v1beta/properties/${numericId}/googleSignalsSettings?updateMask=consent`, {
             method: 'PATCH', headers: { ...authHeader, 'Content-Type': 'application/json' },
             body: JSON.stringify({ consent: 'ENABLED_OVERRIDING' }),
           });
-        } catch (e) { /* best-effort */ }
+          if (!signalsRes.ok) postCreateFailures.push('GOOGLE_SIGNALS_UPDATE_FAILED:' + signalsRes.status);
+        } catch (e) { postCreateFailures.push('GOOGLE_SIGNALS_UPDATE_ERROR:' + e.message); }
 
         // 5. Link the property ID + stream ID back to the entity
         if (site.type === 'business') {
@@ -125,9 +142,15 @@ export default async function(req) {
         }
 
         results.push({
-          site: site.domain, type: site.type, action: 'created', status: 'success',
-          property_id: `properties/${numericId}`, numeric_id: numericId,
-          stream_id: streamId, measurement_id: measurementId,
+          site: site.domain,
+          type: site.type,
+          action: postCreateFailures.length ? 'created_with_followup_failures' : 'created',
+          status: postCreateFailures.length ? 'partial' : 'success',
+          property_id: `properties/${numericId}`,
+          numeric_id: numericId,
+          stream_id: streamId,
+          measurement_id: measurementId,
+          post_create_failures: postCreateFailures,
         });
       } catch (e) {
         results.push({ site: site.domain, type: site.type, action: 'create_failed', status: 'error', error: e.message });
@@ -139,7 +162,7 @@ export default async function(req) {
       account: accountName,
       total_sites: sitesNeedingGA.length,
       created: results.filter(r => r.status === 'success').length,
-      failed: results.filter(r => r.status === 'error').length,
+      failed: results.filter(r => r.status === 'error' || r.status === 'partial').length,
       results,
     });
   } catch (error) {

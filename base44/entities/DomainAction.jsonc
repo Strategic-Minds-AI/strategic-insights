@@ -69,6 +69,38 @@
       "type": "string",
       "format": "date-time",
       "title": "Created At Scan"
+    },
+    "approval_id": {
+      "type": "string",
+      "title": "Approval ID"
+    },
+    "action_class": {
+      "type": "string",
+      "enum": [
+        "READ",
+        "DRAFT",
+        "BRANCH_WRITE",
+        "PREVIEW_WRITE",
+        "EXTERNAL_WRITE",
+        "PROTECTED"
+      ],
+      "default": "DRAFT"
+    },
+    "approval_status": {
+      "type": "string",
+      "enum": [
+        "not_required",
+        "pending",
+        "approved",
+        "denied",
+        "consumed",
+        "failed"
+      ],
+      "default": "not_required"
+    },
+    "idempotency_key": {
+      "type": "string",
+      "title": "Idempotency Key"
     }
   },
   "required": [

@@ -1,0 +1,21 @@
+{
+  "receipt_type": "SOURCE_TRUTH_DISCOVERY",
+  "date": "2026-10-01",
+  "system": "Strategic Insights Domain Operations",
+  "base44_app_id": "6abe11ad28a5bc92c394164f",
+  "base44_mcp_auth": "oauth",
+  "current_admin_machine_identity_count": 0,
+  "current_admin_user_count": 1,
+  "external_service_role_supported": false,
+  "rest_api_bearer_auth_documented": true,
+  "runtime_identity_strategy": "dedicated non-admin Base44 user + RuntimePrincipal DOMAIN_RUNTIME scope",
+  "runtime_identity_provisioned": false,
+  "credential_bound": false,
+  "token_refresh_strategy_verified": false,
+  "production_binding_status": "BLOCKED",
+  "protected_actions_executed": false,
+  "notes": [
+    "Do not reuse Jeremy's personal admin credential for 24x7 runtime.",
+    "Do not enable ZERO child binding until dedicated machine identity and durable token lifecycle are verified."
+  ]
+}

@@ -1,0 +1,86 @@
+{
+  "name": "DomainReceipt",
+  "type": "object",
+  "properties": {
+    "domain_id": {
+      "type": "string",
+      "title": "Domain ID"
+    },
+    "execution_id": {
+      "type": "string",
+      "title": "Execution ID"
+    },
+    "run_id": {
+      "type": "string",
+      "title": "Run ID"
+    },
+    "validator": {
+      "type": "string",
+      "title": "Validator"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "PASS",
+        "FAIL",
+        "BLOCKED",
+        "UNKNOWN"
+      ]
+    },
+    "evidence": {
+      "type": "object"
+    },
+    "failures": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "protected_actions_executed": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "created_at_run": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "next_action": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "domain_id",
+    "run_id",
+    "validator",
+    "status"
+  ],
+  "rls": {
+    "read": true,
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

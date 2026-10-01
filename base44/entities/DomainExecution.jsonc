@@ -1,0 +1,96 @@
+{
+  "name": "DomainExecution",
+  "type": "object",
+  "properties": {
+    "domain_id": {
+      "type": "string",
+      "title": "Domain ID"
+    },
+    "run_id": {
+      "type": "string",
+      "title": "Run ID"
+    },
+    "mode": {
+      "type": "string",
+      "enum": [
+        "MANUAL",
+        "HEARTBEAT"
+      ],
+      "default": "MANUAL"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "QUEUED",
+        "RUNNING",
+        "VALIDATING",
+        "PASS",
+        "FAIL",
+        "BLOCKED",
+        "UNKNOWN"
+      ],
+      "default": "QUEUED"
+    },
+    "action_class": {
+      "type": "string",
+      "enum": [
+        "READ",
+        "DRAFT",
+        "BRANCH_WRITE",
+        "PREVIEW_WRITE",
+        "EXTERNAL_WRITE",
+        "PROTECTED"
+      ],
+      "default": "READ"
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "finished_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "source_sha": {
+      "type": "string"
+    },
+    "result": {
+      "type": "object"
+    },
+    "validation_receipt_id": {
+      "type": "string"
+    },
+    "protected_actions_executed": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "last_error": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "domain_id",
+    "run_id"
+  ],
+  "rls": {
+    "read": true,
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

@@ -34,8 +34,27 @@
     },
     {
       "function_name": "domain_run_pipeline",
-      "description": "Run the full domain operations pipeline for a URL: crawl sitemap/robots, read Search Console + GA4 analytics, scan competitors, generate AI action items. Pass domain_url to run for a specific domain, or action='process_all' to process all due domains."
+      "description": "Run the full domain operations pipeline: crawl, read GSC + GA4, scan competitors, generate actions"
     }
   ],
+  "context_files": [],
+  "app_user_connector_configs": [],
+  "selected_skill_names": [],
+  "selected_workspace_skill_ids": [],
+  "model": "automatic",
+  "whatsapp_greeting": null,
+  "telegram_greeting": null,
+  "line_greeting": null,
+  "memory_config": {
+    "enabled": true,
+    "scope": "both",
+    "include_other_conversation_context": false,
+    "instructions": null
+  },
+  "voice_config": {
+    "voice_id": null
+  },
+  "emails_settings": null,
+  "allow_anonymous_access": false,
   "name": "domain_operations"
 }

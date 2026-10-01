@@ -75,6 +75,33 @@
         },
         "handler": "drive_list_files",
         "annotations": { "read_only_hint": true, "destructive_hint": false, "idempotent_hint": true }
+      },
+      {
+        "name": "run_domain_operations_agent",
+        "title": "Run Strategic Insights Domain Operations Agent",
+        "description": "Add or scan one domain through the Strategic Insights lifecycle. The run is recorded in DomainExecution and independently validated into a DomainReceipt before completion.",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "domain_url": { "type": "string", "description": "Domain or URL to add and scan." },
+            "domain_id": { "type": "string", "description": "Existing Domain record ID to scan." }
+          }
+        },
+        "handler": "domain_agent_run",
+        "annotations": { "read_only_hint": false, "destructive_hint": false, "idempotent_hint": false }
+      },
+      {
+        "name": "reconcile_domain_operations",
+        "title": "Reconcile Strategic Insights Domains",
+        "description": "Process a bounded batch of due active domains. Every domain run passes through the independent validator and returns a durable receipt.",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "max_domains": { "type": "number", "description": "Maximum due domains to process in one bounded cycle (1-10)." }
+          }
+        },
+        "handler": "domain_agent_reconcile",
+        "annotations": { "read_only_hint": false, "destructive_hint": false, "idempotent_hint": true }
       }
     ]
   }

@@ -34,5 +34,16 @@
   "validator_after_every_run": true,
   "implementer_self_certification": false,
   "evolution_mode": "DRAFT_ONLY",
-  "local_runtime_role": "READ_ONLY_WATCHDOG_MIRROR"
+  "local_runtime_role": "READ_ONLY_WATCHDOG_MIRROR",
+  "runtime_identity": {
+    "provider": "Base44",
+    "app_id": "6abe11ad28a5bc92c394164f",
+    "api_auth": "Bearer Base44 user access token",
+    "principal_entity": "RuntimePrincipal",
+    "required_scope": "DOMAIN_RUNTIME",
+    "dedicated_non_admin_user_required": true,
+    "personal_admin_credential_reuse_allowed": false,
+    "principal_provisioned": false,
+    "durable_token_lifecycle_verified": false
+  }
 }

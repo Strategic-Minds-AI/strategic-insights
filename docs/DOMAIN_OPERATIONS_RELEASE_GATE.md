@@ -14,9 +14,9 @@ Sitemap submission, bulk or single Search Console property changes, GA4 property
 
 ## Persistence
 
-The target cloud scheduler is exactly one Vercel Cron at `*/5 * * * *` calling `/api/reconcile`. The endpoint fails closed until the Base44 reconcile URL, runtime credential, and Vercel cron secret are configured through provider-native secret storage.
+The authoritative scheduler is the existing ZERO control-plane Vercel Cron at `*/5 * * * *` calling `/api/cron/auto-builder`. Strategic Insights is a managed child reconcile target; it must not declare its own Base44 or Vercel cron. The child target fails closed until ZERO has a provider-native Base44 reconcile URL and runtime credential binding.
 
-The old Base44 scheduled Domain Heartbeat is removed in this release candidate to prevent dual schedulers. Do not merge/release until the Vercel heartbeat binding is ready.
+The old Base44 scheduled Domain Heartbeat and the app-specific Vercel cron are removed to prevent a cron forest. Do not merge/release until the ZERO child-dispatch branch and binding are validated.
 
 ## Local watchdog
 
@@ -27,8 +27,8 @@ JARVIS-COMMAND is a read-only watchdog and working mirror. It may check source S
 1. Governance regression PASS.
 2. Application build PASS.
 3. GitHub Actions PASS on the exact PR head SHA.
-4. Preview heartbeat returns BLOCKED before secrets are bound and PASS after safe runtime binding.
+4. ZERO managed-target preview returns BLOCKED before the Strategic Insights binding exists and PASS after safe runtime binding.
 5. One golden-path domain produces DomainExecution + DomainReceipt.
 6. A protected-action request remains pending until explicit approval.
 7. An approved protected action executes once, then produces ProtectedActionReceipt.
-8. No production merge, environment-variable change, Vercel project provisioning, DNS change, or external Google mutation without scoped operator approval.
+8. No production merge, ZERO production release, environment-variable/secret change, DNS change, or external Google mutation without scoped operator approval.

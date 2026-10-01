@@ -1,0 +1,41 @@
+{
+  "description": "Real-time ingestion: when files change in Google Drive, incrementally sync and log the changes.",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "drive_webhook_sync",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "handle_change": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "drive_webhook_handler",
+            "args": {
+              "data": "${ .trigger.data }"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Process Drive change",
+            "description": "Incremental sync via Changes API"
+          }
+        }
+      }
+    ]
+  },
+  "name": "Drive Webhook Sync",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "connector",
+      "events": [
+        "changes"
+      ],
+      "integration_type": "googledrive",
+      "resource_id": null
+    }
+  }
+}

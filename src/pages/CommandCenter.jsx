@@ -15,6 +15,7 @@ import CrossSourceInsights from '@/components/command/CrossSourceInsights';
 import AnomalyAlerts from '@/components/command/AnomalyAlerts';
 import NLQueryBar from '@/components/command/NLQueryBar';
 import RevenuePriorityQueue from '@/components/command/RevenuePriorityQueue';
+import AutonomousExecution from '@/components/command/AutonomousExecution';
 
 export default function CommandCenter() {
   const [data, setData] = useState(null);
@@ -112,6 +113,11 @@ export default function CommandCenter() {
         <CrossSourceInsights />
         <RevenuePriorityQueue />
         <AnomalyAlerts />
+      </div>
+
+      {/* Autonomous Execution */}
+      <div className="mb-5">
+        <AutonomousExecution />
       </div>
 
       {/* 90-Day Performance Trend */}

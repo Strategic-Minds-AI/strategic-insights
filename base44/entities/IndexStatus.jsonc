@@ -1,0 +1,77 @@
+{
+  "name": "IndexStatus",
+  "type": "object",
+  "properties": {
+    "domain_id": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string"
+    },
+    "state": {
+      "type": "string",
+      "enum": [
+        "INDEXED",
+        "DISCOVERED_NOT_INDEXED",
+        "CRAWLED_NOT_INDEXED",
+        "BLOCKED_ROBOTS",
+        "NOINDEX",
+        "CANONICAL_MISMATCH",
+        "REDIRECTED",
+        "NOT_FOUND",
+        "SERVER_ERROR",
+        "DUPLICATE",
+        "UNKNOWN"
+      ],
+      "default": "UNKNOWN"
+    },
+    "verdict": {
+      "type": "string"
+    },
+    "coverage_state": {
+      "type": "string"
+    },
+    "robots_state": {
+      "type": "string"
+    },
+    "canonical_google": {
+      "type": "string"
+    },
+    "canonical_user": {
+      "type": "string"
+    },
+    "last_crawl_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "inspected_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "raw": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "domain_id",
+    "url"
+  ],
+  "rls": {
+    "read": true,
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

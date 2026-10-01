@@ -2,27 +2,106 @@
   "name": "DomainApproval",
   "type": "object",
   "properties": {
-    "domain_id": {"type":"string","title":"Domain ID"},
-    "action_type": {"type":"string","enum":["SUBMIT_SITEMAP","CREATE_GA4_PROPERTIES_BULK","ADD_GSC_PROPERTY","VERIFY_SITE_OWNERSHIP","CREATE_GA4_STREAM","CONFIGURE_GTM","PUBLISH_GTM","DNS_VERIFICATION_WRITE","PRODUCTION_RELEASE"]},
-    "scope_type": {"type":"string","enum":["domain","bulk","system"],"default":"domain"},
-    "payload": {"type":"object"},
-    "status": {"type":"string","enum":["pending","approved","denied","executing","consumed","failed","expired"],"default":"pending"},
-    "idempotency_key": {"type":"string"},
-    "requested_at": {"type":"string","format":"date-time"},
-    "requested_by": {"type":"string"},
-    "decided_at": {"type":"string","format":"date-time"},
-    "decided_by": {"type":"string"},
-    "expires_at": {"type":"string","format":"date-time"},
-    "consumed_at": {"type":"string","format":"date-time"},
-    "execution_result": {"type":"object"},
-    "validation_receipt_id": {"type":"string"},
-    "last_error": {"type":"string"}
+    "domain_id": {
+      "type": "string",
+      "title": "Domain ID"
+    },
+    "action_type": {
+      "type": "string",
+      "enum": [
+        "SUBMIT_SITEMAP",
+        "CREATE_GA4_PROPERTIES_BULK",
+        "CREATE_GSC_PROPERTIES_BULK",
+        "ADD_GSC_PROPERTY",
+        "VERIFY_SITE_OWNERSHIP",
+        "CREATE_GA4_STREAM",
+        "CONFIGURE_GTM",
+        "PUBLISH_GTM",
+        "DNS_VERIFICATION_WRITE",
+        "PRODUCTION_RELEASE"
+      ]
+    },
+    "scope_type": {
+      "type": "string",
+      "enum": [
+        "domain",
+        "bulk",
+        "system"
+      ],
+      "default": "domain"
+    },
+    "payload": {
+      "type": "object"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "denied",
+        "executing",
+        "consumed",
+        "failed",
+        "expired"
+      ],
+      "default": "pending"
+    },
+    "idempotency_key": {
+      "type": "string"
+    },
+    "requested_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "requested_by": {
+      "type": "string"
+    },
+    "decided_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "decided_by": {
+      "type": "string"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "consumed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "execution_result": {
+      "type": "object"
+    },
+    "validation_receipt_id": {
+      "type": "string"
+    },
+    "last_error": {
+      "type": "string"
+    }
   },
-  "required": ["action_type","status","idempotency_key"],
+  "required": [
+    "action_type",
+    "status",
+    "idempotency_key"
+  ],
   "rls": {
     "read": true,
-    "create": {"user_condition":{"role":"admin"}},
-    "update": {"user_condition":{"role":"admin"}},
-    "delete": {"user_condition":{"role":"admin"}}
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
   }
 }

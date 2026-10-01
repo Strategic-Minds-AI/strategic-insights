@@ -14,6 +14,7 @@ import DomainOperations from './pages/DomainOperations';
 import CommandCenter from './pages/CommandCenter';
 import DomainDashboard from './pages/DomainDashboard';
 import GrowthInsights from './pages/GrowthInsights';
+import AnalyticsFactory from './pages/AnalyticsFactory';
 import OAuthConsent from './pages/OAuthConsent';
 
 const { Pages, Layout, mainPage } = pagesConfig;
@@ -99,6 +100,11 @@ const AuthenticatedApp = () => {
       <Route path="/GrowthInsights" element={
         <LayoutWrapper currentPageName="GrowthInsights">
           <GrowthInsights />
+        </LayoutWrapper>
+      } />
+      <Route path="/AnalyticsFactory" element={
+        <LayoutWrapper currentPageName="AnalyticsFactory">
+          <AnalyticsFactory />
         </LayoutWrapper>
       } />
       <Route path="/oauth/consent" element={<OAuthConsent />} />

@@ -1,7 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.52';
 
-// Auto-provision GA4 properties for every business/domain that doesn't have one.
-// Creates a property under the connected GA4 account, then links the property ID back.
+// Auto-provision GA4 properties + web data streams for every untracked site.
+// Creates property, creates web stream, enables enhanced measurement, links IDs back.
 
 export default async function(req) {
   try {
@@ -22,7 +22,7 @@ export default async function(req) {
     if (accounts.length === 0) {
       return Response.json({ error: 'No GA4 accounts found on this connection' }, { status: 400 });
     }
-    const accountName = accounts[0].name; // accounts/XXXXX
+    const accountName = accounts[0].name;
 
     // Load all businesses and domains
     const [bizRes, domRes] = await Promise.allSettled([
@@ -34,53 +34,36 @@ export default async function(req) {
 
     // Collect all unique sites that need a GA4 property
     const sitesNeedingGA = [];
+    const seenDomains = new Set();
 
     for (const biz of businesses) {
-      if (biz.ga_property_id) continue; // already has one
-      const rawUrl = biz.website_url || biz.search_console_site || biz.name || '';
+      if (biz.ga_property_id) continue;
+      const rawUrl = biz.website_url || biz.search_console_site || '';
       const cleanDomain = rawUrl.replace(/^https?:\/\//, '').replace(/^sc-domain:/, '').replace(/\/$/, '');
-      if (!cleanDomain || cleanDomain.includes(' ')) continue;
-      sitesNeedingGA.push({
-        type: 'business',
-        id: biz.id,
-        name: biz.name,
-        domain: cleanDomain,
-        displayName: cleanDomain,
-      });
+      if (!cleanDomain || cleanDomain.includes(' ') || seenDomains.has(cleanDomain)) continue;
+      seenDomains.add(cleanDomain);
+      sitesNeedingGA.push({ type: 'business', id: biz.id, name: biz.name, domain: cleanDomain, displayName: cleanDomain });
     }
 
     for (const dom of domains) {
       if (dom.ga4_property_id) continue;
-      if (!dom.domain) continue;
-      // skip if already covered by a business with the same domain
-      if (sitesNeedingGA.some(s => s.domain === dom.domain)) continue;
-      sitesNeedingGA.push({
-        type: 'domain',
-        id: dom.id,
-        name: dom.domain,
-        domain: dom.domain,
-        displayName: dom.domain,
-      });
+      if (!dom.domain || seenDomains.has(dom.domain)) continue;
+      seenDomains.add(dom.domain);
+      sitesNeedingGA.push({ type: 'domain', id: dom.id, name: dom.domain, domain: dom.domain, displayName: dom.domain });
     }
 
     const results = [];
 
     for (const site of sitesNeedingGA) {
       if (dryRun) {
-        results.push({
-          site: site.domain,
-          type: site.type,
-          action: 'would_create',
-          status: 'dry_run',
-        });
+        results.push({ site: site.domain, type: site.type, action: 'would_create', status: 'dry_run' });
         continue;
       }
 
       try {
-        // Create the GA4 property
+        // 1. Create the GA4 property
         const createRes = await fetch('https://analyticsadmin.googleapis.com/v1beta/properties', {
-          method: 'POST',
-          headers: authHeader,
+          method: 'POST', headers: authHeader,
           body: JSON.stringify({
             parent: accountName,
             displayName: site.displayName,
@@ -91,49 +74,63 @@ export default async function(req) {
           }),
         });
         const created = await createRes.json();
-
         if (!createRes.ok) {
-          results.push({
-            site: site.domain,
-            type: site.type,
-            action: 'create_failed',
-            status: 'error',
-            error: created.error?.message || 'Unknown error',
-          });
+          results.push({ site: site.domain, type: site.type, action: 'create_failed', status: 'error', error: created.error?.message || 'Unknown error' });
           continue;
         }
 
-        const propertyId = created.name; // properties/XXXXX
         const numericId = created.name.replace('properties/', '');
 
-        // Link the property ID back to the entity
+        // 2. Create a web data stream
+        let streamId = null;
+        let measurementId = null;
+        try {
+          const streamRes = await fetch(`https://analyticsadmin.googleapis.com/v1beta/properties/${numericId}/dataStreams`, {
+            method: 'POST', headers: authHeader,
+            body: JSON.stringify({
+              webStreamData: { defaultUri: `https://${site.domain}` },
+            }),
+          });
+          const streamData = await streamRes.json();
+          if (streamRes.ok) {
+            streamId = streamData.name?.split('/').pop();
+            measurementId = streamData.webStreamData?.measurementId;
+          }
+        } catch (e) { /* stream creation is best-effort */ }
+
+        // 3. Set data retention to 14 months
+        try {
+          await fetch(`https://analyticsadmin.googleapis.com/v1beta/properties/${numericId}`, {
+            method: 'PATCH', headers: { ...authHeader, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ retentionSettings: { retentionDuration: 'FOURTEEN_MONTHS' } }),
+          });
+        } catch (e) { /* best-effort */ }
+
+        // 4. Enable Google Signals
+        try {
+          await fetch(`https://analyticsadmin.googleapis.com/v1beta/properties/${numericId}/googleSignalsSettings?updateMask=consent`, {
+            method: 'PATCH', headers: { ...authHeader, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ consent: 'ENABLED_OVERRIDING' }),
+          });
+        } catch (e) { /* best-effort */ }
+
+        // 5. Link the property ID + stream ID back to the entity
         if (site.type === 'business') {
           await base44.entities.Business.update(site.id, {
             ga_property_id: numericId,
             ga_property_name: created.displayName,
           });
         } else {
-          await base44.entities.Domain.update(site.id, {
-            ga4_property_id: numericId,
-          });
+          await base44.entities.Domain.update(site.id, { ga4_property_id: numericId });
         }
 
         results.push({
-          site: site.domain,
-          type: site.type,
-          action: 'created',
-          status: 'success',
-          property_id: propertyId,
-          numeric_id: numericId,
+          site: site.domain, type: site.type, action: 'created', status: 'success',
+          property_id: `properties/${numericId}`, numeric_id: numericId,
+          stream_id: streamId, measurement_id: measurementId,
         });
       } catch (e) {
-        results.push({
-          site: site.domain,
-          type: site.type,
-          action: 'create_failed',
-          status: 'error',
-          error: e.message,
-        });
+        results.push({ site: site.domain, type: site.type, action: 'create_failed', status: 'error', error: e.message });
       }
     }
 

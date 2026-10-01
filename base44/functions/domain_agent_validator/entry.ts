@@ -1,13 +1,38 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.52';
 
+async function authorizeDomainRuntime(base44, user) {
+  if (!user) return { ok:false, status:401, error:'Unauthorized' };
+  if (user.role === 'admin') return { ok:true, kind:'admin' };
+
+  const rowsRes = await base44.asServiceRole.entities.RuntimePrincipal.filter(
+    { user_id:user.id, status:'active' },
+    { limit:10 }
+  ).catch(() => []);
+  const rows = rowsRes.items || rowsRes || [];
+  const nowMs = Date.now();
+  const principal = rows.find(row => {
+    const scopes = Array.isArray(row.scopes) ? row.scopes : [];
+    if (!scopes.includes('DOMAIN_RUNTIME')) return false;
+    if (row.expires_at) {
+      const expiry = Date.parse(row.expires_at);
+      if (!Number.isFinite(expiry) || expiry <= nowMs) return false;
+    }
+    return true;
+  });
+
+  return principal
+    ? { ok:true, kind:'runtime', principal_id:principal.id }
+    : { ok:false, status:403, error:'Runtime scope forbidden' };
+}
+
 function now() { return new Date().toISOString(); }
 
 export default async function(req) {
   try {
     const base44 = createClientFromRequest(req);
     const user = await base44.auth.me();
-    if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
-    if (user.role !== 'admin') return Response.json({ error: 'Forbidden' }, { status: 403 });
+    const auth = await authorizeDomainRuntime(base44, user);
+    if (!auth.ok) return Response.json({ error: auth.error }, { status: auth.status });
 
     const body = await req.json().catch(() => ({}));
     const { execution_id, run_id, domain_id, execution_result } = body;

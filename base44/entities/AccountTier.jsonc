@@ -1,0 +1,44 @@
+{
+  "name": "AccountTier",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Tier name"
+    },
+    "order": {
+      "type": "number",
+      "description": "Display order"
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": {
+          "$in": [
+            "admin",
+            "user"
+          ]
+        }
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

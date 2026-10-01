@@ -1,0 +1,88 @@
+{
+  "name": "CalendarEvent",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Event title"
+    },
+    "description": {
+      "type": "string",
+      "description": "Event description"
+    },
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "meeting",
+        "call",
+        "demo",
+        "task",
+        "reminder",
+        "appointment"
+      ],
+      "default": "meeting",
+      "description": "Type of event"
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Event start date and time"
+    },
+    "end_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Event end date and time"
+    },
+    "related_to_type": {
+      "type": "string",
+      "enum": [
+        "Contact",
+        "Account",
+        "Opportunity",
+        "Lead"
+      ],
+      "description": "Type of related entity"
+    },
+    "related_to_id": {
+      "type": "string",
+      "description": "ID of related entity"
+    },
+    "related_to_name": {
+      "type": "string",
+      "description": "Name of related entity"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "scheduled",
+        "completed",
+        "cancelled"
+      ],
+      "default": "scheduled",
+      "description": "Event status"
+    },
+    "location": {
+      "type": "string",
+      "description": "Event location"
+    }
+  },
+  "required": [
+    "title",
+    "start_date",
+    "event_type"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

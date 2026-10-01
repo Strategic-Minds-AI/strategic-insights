@@ -1,0 +1,74 @@
+{
+  "name": "Lead",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Lead name"
+    },
+    "email": {
+      "type": "string",
+      "description": "Lead email"
+    },
+    "phone": {
+      "type": "string",
+      "description": "Lead phone"
+    },
+    "company": {
+      "type": "string",
+      "description": "Company name"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "new",
+        "contacted",
+        "qualified",
+        "unqualified",
+        "won",
+        "lost"
+      ],
+      "default": "new"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "call",
+        "email",
+        "website",
+        "partner",
+        "referral"
+      ],
+      "description": "Lead source"
+    },
+    "value": {
+      "type": "number",
+      "description": "Deal value"
+    },
+    "next_follow_up": {
+      "type": "string",
+      "format": "date",
+      "description": "Next follow-up date"
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    },
+    "write": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

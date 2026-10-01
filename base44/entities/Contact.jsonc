@@ -1,0 +1,114 @@
+{
+  "name": "Contact",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Contact name"
+    },
+    "email": {
+      "type": "string",
+      "description": "Contact email"
+    },
+    "phone": {
+      "type": "string",
+      "description": "Contact phone"
+    },
+    "company": {
+      "type": "string",
+      "description": "Company name"
+    },
+    "position": {
+      "type": "string",
+      "description": "Job position"
+    },
+    "photo_url": {
+      "type": "string",
+      "description": "Contact photo URL"
+    },
+    "role": {
+      "type": "string",
+      "enum": [
+        "Decision Maker",
+        "Key Contact",
+        "Influencer",
+        "End User",
+        "Other"
+      ],
+      "description": "Contact role"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "Key",
+        "Standard",
+        "At Risk"
+      ],
+      "default": "Standard",
+      "description": "Contact priority level"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive"
+      ],
+      "default": "active"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "call",
+        "email",
+        "website",
+        "partner",
+        "referral"
+      ],
+      "description": "Lead source"
+    },
+    "last_activity_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Last activity date"
+    },
+    "engagement_level": {
+      "type": "string",
+      "enum": [
+        "High",
+        "Medium",
+        "Low"
+      ],
+      "description": "Engagement level"
+    },
+    "company_size": {
+      "type": "string",
+      "enum": [
+        "Small (1-50)",
+        "Medium (51-500)",
+        "Large (500+)"
+      ],
+      "description": "Company size"
+    }
+  },
+  "required": [
+    "name",
+    "email"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    },
+    "write": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

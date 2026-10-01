@@ -1,0 +1,69 @@
+{
+  "name": "Business",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "title": "Business Name"
+    },
+    "industry": {
+      "type": "string",
+      "title": "Industry"
+    },
+    "website_url": {
+      "type": "string",
+      "title": "Website URL"
+    },
+    "ga_property_id": {
+      "type": "string",
+      "title": "Google Analytics Property ID"
+    },
+    "ga_property_name": {
+      "type": "string",
+      "title": "GA Property Display Name"
+    },
+    "search_console_site": {
+      "type": "string",
+      "title": "Search Console Site URL"
+    },
+    "logo_url": {
+      "type": "string",
+      "title": "Logo URL"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "paused"
+      ],
+      "default": "active",
+      "title": "Status"
+    },
+    "last_scan_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Last Scan At"
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "rls": {
+    "read": true,
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

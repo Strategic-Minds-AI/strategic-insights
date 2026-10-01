@@ -1,0 +1,62 @@
+{
+  "name": "AnalyticsSnapshot",
+  "type": "object",
+  "properties": {
+    "business_id": {
+      "type": "string",
+      "title": "Business ID"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "google_analytics",
+        "google_search_console",
+        "meta_ads",
+        "google_ads",
+        "ai_web_search"
+      ],
+      "title": "Data Source"
+    },
+    "metrics": {
+      "type": "object",
+      "title": "Metrics JSON"
+    },
+    "period_start": {
+      "type": "string",
+      "format": "date",
+      "title": "Period Start"
+    },
+    "period_end": {
+      "type": "string",
+      "format": "date",
+      "title": "Period End"
+    },
+    "fetched_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Fetched At"
+    }
+  },
+  "required": [
+    "business_id",
+    "source"
+  ],
+  "rls": {
+    "read": true,
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

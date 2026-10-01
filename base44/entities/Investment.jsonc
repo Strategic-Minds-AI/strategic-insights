@@ -1,0 +1,67 @@
+{
+  "name": "Investment",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Investment name"
+    },
+    "symbol": {
+      "type": "string",
+      "description": "Stock/crypto symbol"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "stock",
+        "etf",
+        "crypto",
+        "bond",
+        "mutual_fund",
+        "real_estate",
+        "other"
+      ],
+      "description": "Investment type"
+    },
+    "shares": {
+      "type": "number",
+      "description": "Number of shares/units"
+    },
+    "purchase_price": {
+      "type": "number",
+      "description": "Price per share at purchase"
+    },
+    "current_price": {
+      "type": "number",
+      "description": "Current price per share"
+    },
+    "purchase_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Purchase date"
+    }
+  },
+  "required": [
+    "name",
+    "type",
+    "shares",
+    "purchase_price"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    },
+    "write": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

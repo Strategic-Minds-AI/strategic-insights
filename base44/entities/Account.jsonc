@@ -1,0 +1,63 @@
+{
+  "name": "Account",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Account name"
+    },
+    "industry": {
+      "type": "string",
+      "description": "Industry type"
+    },
+    "website": {
+      "type": "string",
+      "description": "Company website"
+    },
+    "phone": {
+      "type": "string",
+      "description": "Phone number"
+    },
+    "email": {
+      "type": "string",
+      "description": "Email address"
+    },
+    "annual_revenue": {
+      "type": "number",
+      "description": "Annual revenue"
+    },
+    "employees": {
+      "type": "number",
+      "description": "Number of employees"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "prospect"
+      ],
+      "default": "active"
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    },
+    "write": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

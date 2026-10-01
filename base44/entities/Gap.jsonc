@@ -1,0 +1,105 @@
+{
+  "name": "Gap",
+  "type": "object",
+  "properties": {
+    "business_id": {
+      "type": "string",
+      "title": "Business ID"
+    },
+    "title": {
+      "type": "string",
+      "title": "Gap Title"
+    },
+    "description": {
+      "type": "string",
+      "title": "Description"
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "critical",
+        "high",
+        "medium",
+        "low"
+      ],
+      "default": "medium",
+      "title": "Severity"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "tracking",
+        "seo",
+        "conversion",
+        "traffic",
+        "performance",
+        "content",
+        "technical",
+        "market"
+      ],
+      "default": "performance",
+      "title": "Category"
+    },
+    "source": {
+      "type": "string",
+      "title": "Detected By"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "in_progress",
+        "resolved",
+        "dismissed"
+      ],
+      "default": "open",
+      "title": "Status"
+    },
+    "action_url": {
+      "type": "string",
+      "title": "Action URL"
+    },
+    "ai_recommendation": {
+      "type": "string",
+      "title": "AI Recommendation"
+    },
+    "ai_action_steps": {
+      "type": "string",
+      "title": "AI Action Steps (JSON)"
+    },
+    "metric_value": {
+      "type": "string",
+      "title": "Current Metric Value"
+    },
+    "benchmark_value": {
+      "type": "string",
+      "title": "Benchmark Value"
+    },
+    "estimated_impact": {
+      "type": "string",
+      "title": "Estimated Impact"
+    }
+  },
+  "required": [
+    "business_id",
+    "title"
+  ],
+  "rls": {
+    "read": true,
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

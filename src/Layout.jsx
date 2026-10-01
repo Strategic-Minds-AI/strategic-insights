@@ -14,7 +14,9 @@ import {
   Search,
   Mail,
   Bell,
-  Settings
+  Settings,
+  Radar,
+  Terminal
 } from 'lucide-react';
 import { Avatar } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
@@ -45,6 +47,7 @@ export default function Layout({ children, currentPageName }) {
 
   const menuItems = [
     { name: 'Dashboard', icon: LayoutDashboard, path: 'Dashboard' },
+    { name: 'Strategic Analytics', icon: Radar, path: 'StrategicAnalytics' },
     { name: 'Accounts', icon: Users, path: 'Accounts' },
     { name: 'Contacts', icon: UserCircle, path: 'Contacts' },
     { name: 'Leads', icon: Target, path: 'Leads' },
@@ -54,6 +57,7 @@ export default function Layout({ children, currentPageName }) {
   ];
 
   const bottomMenuItems = [
+    { name: 'Developer', icon: Terminal, path: 'DeveloperAPI' },
     { name: 'Settings', icon: Settings, path: 'Settings' }
   ];
 

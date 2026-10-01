@@ -1,0 +1,72 @@
+{
+  "name": "Goal",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Goal name"
+    },
+    "target_amount": {
+      "type": "number",
+      "description": "Target amount to reach"
+    },
+    "current_amount": {
+      "type": "number",
+      "description": "Current saved amount"
+    },
+    "deadline": {
+      "type": "string",
+      "format": "date",
+      "description": "Target date"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "emergency_fund",
+        "vacation",
+        "car",
+        "house",
+        "education",
+        "retirement",
+        "other"
+      ],
+      "description": "Goal category"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "completed",
+        "paused"
+      ],
+      "default": "active",
+      "description": "Goal status"
+    },
+    "color": {
+      "type": "string",
+      "description": "Goal color for display"
+    }
+  },
+  "required": [
+    "name",
+    "target_amount",
+    "current_amount"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    },
+    "write": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

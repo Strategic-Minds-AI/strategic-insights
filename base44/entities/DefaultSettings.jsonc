@@ -1,0 +1,59 @@
+{
+  "name": "DefaultSettings",
+  "type": "object",
+  "properties": {
+    "default_currency": {
+      "type": "string",
+      "default": "AED",
+      "description": "Default currency"
+    },
+    "default_lead_stage": {
+      "type": "string",
+      "default": "new",
+      "description": "Default lead stage"
+    },
+    "default_account_tier": {
+      "type": "string",
+      "default": "B",
+      "description": "Default account tier"
+    },
+    "default_follow_up_days": {
+      "type": "number",
+      "default": 3,
+      "description": "Days after activity to schedule follow-up"
+    },
+    "default_calendar_view": {
+      "type": "string",
+      "enum": [
+        "month",
+        "week"
+      ],
+      "default": "month",
+      "description": "Default calendar view"
+    },
+    "first_day_of_week": {
+      "type": "string",
+      "enum": [
+        "monday",
+        "sunday"
+      ],
+      "default": "monday",
+      "description": "First day of week"
+    }
+  },
+  "required": [],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    },
+    "write": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

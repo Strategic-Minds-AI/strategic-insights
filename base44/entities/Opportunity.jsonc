@@ -1,0 +1,76 @@
+{
+  "name": "Opportunity",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Opportunity name"
+    },
+    "account_name": {
+      "type": "string",
+      "description": "Associated account"
+    },
+    "amount": {
+      "type": "number",
+      "description": "Deal amount"
+    },
+    "stage": {
+      "type": "string",
+      "enum": [
+        "prospecting",
+        "qualification",
+        "proposal",
+        "negotiation",
+        "closed_won",
+        "closed_lost"
+      ],
+      "default": "prospecting",
+      "description": "Sales stage"
+    },
+    "probability": {
+      "type": "number",
+      "description": "Win probability percentage"
+    },
+    "close_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Expected close date"
+    },
+    "owner": {
+      "type": "string",
+      "description": "Opportunity owner"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "call",
+        "email",
+        "website",
+        "partner"
+      ],
+      "description": "Lead source"
+    }
+  },
+  "required": [
+    "name",
+    "amount",
+    "stage"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    },
+    "write": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

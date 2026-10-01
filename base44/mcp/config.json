@@ -1,0 +1,27 @@
+{
+  "auth": "oauth",
+  "tools": {
+    "functions": [
+      {
+        "name": "run_strategic_scan",
+        "title": "Run Strategic Analytics Skip-Trace",
+        "description": "Searches all connected analytics accounts (Google Analytics, Search Console), auto-detects businesses, fetches metrics, finds performance gaps, and returns AI-generated recommendations on how to close each gap. Call when the user asks for a gap analysis, performance audit, or strategic scan of their businesses.",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "business_id": {
+              "type": "string",
+              "description": "Optional. Limit the scan to a single business by its ID. Omit to scan all businesses."
+            },
+            "force_refresh": {
+              "type": "boolean",
+              "description": "If true, re-fetches fresh data even if a recent snapshot exists. Defaults to false."
+            }
+          }
+        },
+        "handler": "strategic_scan",
+        "annotations": { "read_only_hint": false, "destructive_hint": false, "idempotent_hint": true }
+      }
+    ]
+  }
+}

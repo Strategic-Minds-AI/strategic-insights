@@ -1,0 +1,57 @@
+{
+  "name": "Budget",
+  "type": "object",
+  "properties": {
+    "category": {
+      "type": "string",
+      "enum": [
+        "needs",
+        "wants",
+        "savings",
+        "bills",
+        "food",
+        "transport",
+        "entertainment",
+        "shopping",
+        "health",
+        "education",
+        "other"
+      ],
+      "description": "Budget category"
+    },
+    "amount": {
+      "type": "number",
+      "description": "Budget limit amount"
+    },
+    "month": {
+      "type": "string",
+      "description": "Budget month (YYYY-MM format)"
+    },
+    "spent": {
+      "type": "number",
+      "description": "Amount spent this month"
+    }
+  },
+  "required": [
+    "category",
+    "amount",
+    "month"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    },
+    "write": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

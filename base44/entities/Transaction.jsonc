@@ -1,0 +1,80 @@
+{
+  "name": "Transaction",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Transaction description"
+    },
+    "amount": {
+      "type": "number",
+      "description": "Transaction amount"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "income",
+        "expense"
+      ],
+      "description": "Transaction type"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "salary",
+        "freelance",
+        "investments",
+        "other_income",
+        "needs",
+        "wants",
+        "savings",
+        "bills",
+        "food",
+        "transport",
+        "entertainment",
+        "shopping",
+        "health",
+        "education",
+        "other"
+      ],
+      "description": "Transaction category"
+    },
+    "account_id": {
+      "type": "string",
+      "description": "Associated account ID"
+    },
+    "date": {
+      "type": "string",
+      "format": "date",
+      "description": "Transaction date"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional notes"
+    }
+  },
+  "required": [
+    "title",
+    "amount",
+    "type",
+    "category",
+    "date"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    },
+    "write": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

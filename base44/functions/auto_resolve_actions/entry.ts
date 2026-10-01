@@ -26,11 +26,11 @@ export default async function(req) {
     const results = [];
     const now = new Date().toISOString();
 
-    // ── Auto-resolvable patterns ──
-    // 1. Sitemap not pushed → push it
-    // 2. Tracking not configured → flag for manual (can't auto-fix without GA property access)
-    // 3. Robots.txt missing → can't auto-fix (needs server access)
-    // 4. Indexing issues → can request indexing via GSC API (requires connector)
+    // ── Governed auto-resolvable patterns ──
+    // 1. Sitemap submission → queue protected approval; never write to Google directly
+    // 2. Tracking configuration → draft/approval only when external mutation is required
+    // 3. Robots.txt/site repairs → require repo/preview-safe implementation path
+    // 4. Rescan/crawl → safe execution through domain_agent_run + independent validator
 
     for (const action of actions) {
       const title = (action.title || '').toLowerCase();
@@ -44,16 +44,23 @@ export default async function(req) {
         if (domain && domain.sitemap_url) {
           if (!dryRun) {
             try {
-              await base44.functions.invoke('push_sitemap_to_gsc', {
+              const approvalRes = await base44.functions.invoke('request_domain_approval', {
                 domain_id: domain.id,
-                sitemap_url: domain.sitemap_url,
+                action_type: 'SUBMIT_SITEMAP',
+                idempotency_key: `submit-sitemap:${domain.id}:${domain.sitemap_url}`,
+                payload: { sitemap_url: domain.sitemap_url }
               });
+              const approval = approvalRes.data?.approval;
               await base44.entities.DomainAction.update(action.id, {
-                status: 'resolved',
-                ai_recommendation: `Auto-resolved: sitemap ${domain.sitemap_url} pushed to Search Console at ${now}`,
+                status: 'in_progress',
+                approval_id: approval?.id || '',
+                action_class: 'PROTECTED',
+                approval_status: 'pending',
+                idempotency_key: `submit-sitemap:${domain.id}:${domain.sitemap_url}`,
+                ai_recommendation: `Approval required: sitemap submission queued at ${now}. No Google write executed.`,
               });
-              autoResolved = true;
-              resolution = `Sitemap pushed to GSC for ${domain.domain}`;
+              autoResolved = false;
+              resolution = `Approval requested for sitemap submission on ${domain.domain}`;
             } catch (e) {
               resolution = `Sitemap push failed: ${e.message}`;
             }
@@ -70,9 +77,9 @@ export default async function(req) {
         if (domain) {
           if (!dryRun) {
             try {
-              await base44.functions.invoke('domain_run_pipeline', {
-                action: 'process_domain',
+              await base44.functions.invoke('domain_agent_run', {
                 domain_id: domain.id,
+                run_id: 'auto-resolve-action-' + action.id
               });
               await base44.entities.DomainAction.update(action.id, {
                 status: 'resolved',

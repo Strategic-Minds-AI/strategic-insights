@@ -68,7 +68,7 @@ export default function GA4Provisioning() {
               {result.failed > 0 && <Badge variant="destructive" className="text-xs">{result.failed} failed</Badge>}
               {result.dry_run && <Badge variant="outline" className="text-xs">DRY RUN</Badge>}
             </div>
-            {result.results.map((r, i) => (
+            {(result.results || []).map((r, i) => (
               <div key={i} className="flex items-start gap-2 p-2 border rounded-lg">
                 {r.status === 'success' ? (
                   <CheckCircle2 className="w-4 h-4 text-green-500 shrink-0 mt-0.5" />
@@ -84,7 +84,7 @@ export default function GA4Provisioning() {
                 <Badge variant="outline" className="text-xs shrink-0">{r.type}</Badge>
               </div>
             ))}
-            {result.results.length === 0 && (
+            {(!result.results || result.results.length === 0) && (
               <p className="text-sm text-gray-400 text-center py-2">All tracked sites already have a GA4 property.</p>
             )}
           </>

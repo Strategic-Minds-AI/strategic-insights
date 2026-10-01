@@ -44,6 +44,8 @@ export default async function(req) {
     const previousRows = previous.items || previous || [];
     if (previousRows.length) {
       const prior = previousRows[0];
+      const inFlight = ['QUEUED','RUNNING','VALIDATING'].includes(prior.status);
+      const validationStatus = inFlight ? 'BLOCKED' : prior.status;
       return Response.json({
         ok: prior.status === 'PASS',
         duplicate: true,
@@ -51,8 +53,13 @@ export default async function(req) {
         execution_id: prior.id,
         domain_id: domain.id,
         status: prior.status,
-        validation_receipt_id: prior.validation_receipt_id || null
-      }, { status: prior.status === 'FAIL' || prior.status === 'UNKNOWN' ? 409 : 200 });
+        validation_receipt_id: prior.validation_receipt_id || null,
+        validation: {
+          status: validationStatus,
+          receipt_id: prior.validation_receipt_id || null,
+          reason: inFlight ? 'DUPLICATE_RUN_IN_FLIGHT' : 'DUPLICATE_RUN_REUSED'
+        }
+      }, { status: prior.status === 'PASS' ? 200 : inFlight ? 202 : 409 });
     }
 
     const execution = await svc.entities.DomainExecution.create({

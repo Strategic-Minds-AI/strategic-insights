@@ -1,0 +1,77 @@
+{
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "daily_analytics_provisioning",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "provision_ga4": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "provision_ga4_properties",
+            "args": {
+              "dry_run": false
+            }
+          },
+          "then": "provision_gsc",
+          "x-base44": {
+            "title": "Provision GA4 properties",
+            "description": "Create GA4 + web stream for untracked sites"
+          }
+        }
+      },
+      {
+        "provision_gsc": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "provision_gsc_properties",
+            "args": {
+              "dry_run": false
+            }
+          },
+          "then": "detect_gaps",
+          "x-base44": {
+            "title": "Provision GSC properties",
+            "description": "Add untracked sites to Search Console"
+          }
+        }
+      },
+      {
+        "detect_gaps": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "detect_tracking_gaps",
+            "args": {}
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Detect tracking gaps",
+            "description": "Scan all GA4 properties for missing settings"
+          }
+        }
+      }
+    ]
+  },
+  "name": "Daily Analytics Provisioning",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 9 * * *",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "description": "Runs daily at 9am ET: auto-provisions GA4 properties + GSC properties for any untracked sites, then detects tracking gaps across all properties."
+}

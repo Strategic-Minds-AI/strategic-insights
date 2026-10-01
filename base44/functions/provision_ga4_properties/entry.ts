@@ -114,6 +114,28 @@ export default async function(req) {
           });
         } catch (e) { /* best-effort */ }
 
+        // 4b. Enable enhanced measurement (scrolls, outbound clicks, file downloads, video engagement, form interactions, site search)
+        if (streamId) {
+          try {
+            const emsName = `properties/${numericId}/dataStreams/${streamId}/enhancedMeasurementSettings`;
+            await fetch(`https://analyticsadmin.googleapis.com/v1beta/${emsName}?updateMask=streamEnabled,scrollsEnabled,outboundClicksEnabled,fileDownloadsEnabled,videoEngagementEnabled,formInteractionsEnabled,searchEnabled,pageChangesEnabled,siteSearchEnabled`, {
+              method: 'PATCH', headers: { ...authHeader, 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                name: emsName,
+                streamEnabled: true,
+                scrollsEnabled: true,
+                outboundClicksEnabled: true,
+                fileDownloadsEnabled: true,
+                videoEngagementEnabled: true,
+                formInteractionsEnabled: true,
+                searchEnabled: true,
+                pageChangesEnabled: true,
+                siteSearchEnabled: true,
+              }),
+            });
+          } catch (e) { /* best-effort */ }
+        }
+
         // 5. Link the property ID + stream ID back to the entity
         if (site.type === 'business') {
           await base44.entities.Business.update(site.id, {

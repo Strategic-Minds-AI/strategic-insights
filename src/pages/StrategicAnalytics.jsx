@@ -10,6 +10,7 @@ import BusinessSwitcher from '@/components/strategic/BusinessSwitcher';
 import PlatformGrid from '@/components/strategic/PlatformGrid';
 import GapList from '@/components/strategic/GapList';
 import ForecastPanel from '@/components/strategic/ForecastPanel';
+import BusinessComparison from '@/components/strategic/BusinessComparison';
 import { PLATFORMS } from '@/lib/platforms';
 
 export default function StrategicAnalytics() {
@@ -18,6 +19,7 @@ export default function StrategicAnalytics() {
   const [scanning, setScanning] = useState(false);
   const [scanResult, setScanResult] = useState(null);
   const [error, setError] = useState(null);
+  const [view, setView] = useState('gaps');
 
   const { data: businesses = [], isLoading: bizLoading } = useQuery({
     queryKey: ['strategic-businesses'],
@@ -170,15 +172,28 @@ export default function StrategicAnalytics() {
         <ForecastPanel snapshots={snapshots} />
       </div>
 
-      {/* Gap Analysis */}
+      {/* View Toggle */}
       <div className="mb-4 flex items-center justify-between">
-        <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-          <Radar className="w-5 h-5 text-violet-600" /> Gap Analysis
-          {gaps.length > 0 && <Badge className="bg-violet-100 text-violet-700">{gaps.length}</Badge>}
-        </h3>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setView('gaps')}
+            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${view === 'gaps' ? 'bg-violet-600 text-white' : 'bg-white border border-gray-200 text-gray-600 hover:border-violet-300'}`}
+          >
+            <Radar className="w-4 h-4 inline mr-1" /> Gap Analysis
+            {gaps.length > 0 && <Badge className="ml-1.5 bg-violet-100 text-violet-700">{gaps.length}</Badge>}
+          </button>
+          <button
+            onClick={() => setView('compare')}
+            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${view === 'compare' ? 'bg-violet-600 text-white' : 'bg-white border border-gray-200 text-gray-600 hover:border-violet-300'}`}
+          >
+            <TrendingUp className="w-4 h-4 inline mr-1" /> Compare Businesses
+          </button>
+        </div>
       </div>
 
-      {scanning ? (
+      {view === 'compare' ? (
+        <BusinessComparison businesses={businesses} />
+      ) : scanning ? (
         <Card><CardContent className="p-12 text-center">
           <RefreshCw className="w-8 h-8 text-violet-500 animate-spin mx-auto mb-3" />
           <p className="text-gray-500">Searching all accounts, fetching metrics, and finding gaps…</p>

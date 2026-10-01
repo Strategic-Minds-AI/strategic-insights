@@ -1,18 +1,26 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useToast } from '@/components/ui/use-toast';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Radar, Plus, RefreshCw, Globe, Activity, AlertCircle, CheckCircle, Clock } from 'lucide-react';
 import DomainDetail from '@/components/domains/DomainDetail';
+import BulkActionBar from '@/components/domains/BulkActionBar';
+import BulkMetadataDialog from '@/components/domains/BulkMetadataDialog';
 
 export default function DomainOperations() {
   const queryClient = useQueryClient();
+  const { toast } = useToast();
   const [newDomain, setNewDomain] = useState('');
   const [selectedDomain, setSelectedDomain] = useState(null);
   const [running, setRunning] = useState(false);
+  const [selectedIds, setSelectedIds] = useState(new Set());
+  const [bulkCrawling, setBulkCrawling] = useState(false);
+  const [metadataOpen, setMetadataOpen] = useState(false);
 
   const { data: domains = [], isLoading } = useQuery({
     queryKey: ['domains'],
@@ -39,9 +47,46 @@ export default function DomainOperations() {
     try {
       await base44.functions.invoke('domain_agent_run', { domain_id: domainId });
       queryClient.invalidateQueries({ queryKey: ['domains'] });
+      toast({ title: 'Crawl complete', description: 'Domain data refreshed.' });
+    } catch (e) {
+      toast({ title: 'Crawl failed', description: e.message, variant: 'destructive' });
     } finally {
       setRunning(false);
     }
+  };
+
+  const toggleSelect = (id) => {
+    setSelectedIds(prev => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+  };
+
+  const handleBulkCrawl = async () => {
+    setBulkCrawling(true);
+    const ids = Array.from(selectedIds);
+    try {
+      await Promise.all(ids.map(id => base44.functions.invoke('domain_agent_run', { domain_id: id })));
+      queryClient.invalidateQueries({ queryKey: ['domains'] });
+      toast({ title: 'Bulk crawl complete', description: `${ids.length} domain(s) refreshed.` });
+      setSelectedIds(new Set());
+    } catch (e) {
+      toast({ title: 'Bulk crawl failed', description: e.message, variant: 'destructive' });
+    } finally {
+      setBulkCrawling(false);
+    }
+  };
+
+  const handleBulkMetadata = async (updates) => {
+    const ids = Array.from(selectedIds);
+    const cleanUpdates = Object.fromEntries(Object.entries(updates).filter(([, v]) => v !== undefined));
+    if (Object.keys(cleanUpdates).length === 0) return;
+    await base44.entities.Domain.bulkUpdate(ids.map(id => ({ id, ...cleanUpdates })));
+    queryClient.invalidateQueries({ queryKey: ['domains'] });
+    toast({ title: 'Metadata updated', description: `${ids.length} domain(s) updated.` });
+    setMetadataOpen(false);
+    setSelectedIds(new Set());
   };
 
   const statusConfig = {
@@ -99,11 +144,15 @@ export default function DomainOperations() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {domains.map(d => {
             const sc = statusConfig[d.status] || statusConfig.pending;
+            const isSelected = selectedIds.has(d.id);
             return (
-              <Card key={d.id} className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => setSelectedDomain(d)}>
+              <Card key={d.id} className={`cursor-pointer hover:shadow-md transition-shadow ${isSelected ? 'ring-2 ring-indigo-400' : ''}`} onClick={() => setSelectedDomain(d)}>
                 <CardContent className="pt-5">
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center gap-2 min-w-0">
+                      <div onClick={e => { e.stopPropagation(); toggleSelect(d.id); }}>
+                        <Checkbox checked={isSelected} />
+                      </div>
                       <Globe className="w-5 h-5 text-indigo-600 shrink-0" />
                       <p className="font-semibold text-sm truncate">{d.domain}</p>
                     </div>
@@ -140,6 +189,21 @@ export default function DomainOperations() {
       {selectedDomain && (
         <DomainDetail domain={selectedDomain} onClose={() => setSelectedDomain(null)} />
       )}
+
+      {/* Bulk Actions */}
+      <BulkActionBar
+        selectedCount={selectedIds.size}
+        onClear={() => setSelectedIds(new Set())}
+        onCrawl={handleBulkCrawl}
+        onOpenMetadata={() => setMetadataOpen(true)}
+        crawling={bulkCrawling}
+      />
+      <BulkMetadataDialog
+        open={metadataOpen}
+        onClose={() => setMetadataOpen(false)}
+        selectedDomains={Array.from(selectedIds).map(id => domains.find(d => d.id === id)).filter(Boolean)}
+        onSave={handleBulkMetadata}
+      />
     </div>
   );
 }

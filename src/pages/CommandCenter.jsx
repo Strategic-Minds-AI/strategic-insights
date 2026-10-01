@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
+import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -9,6 +10,7 @@ import MetricCard from '@/components/command/MetricCard';
 import ActionQueue from '@/components/command/ActionQueue';
 import SelfDiscovery from '@/components/command/SelfDiscovery';
 import InsightsPanel from '@/components/command/InsightsPanel';
+import PerformanceTrendChart from '@/components/command/PerformanceTrendChart';
 
 export default function CommandCenter() {
   const [data, setData] = useState(null);
@@ -30,6 +32,14 @@ export default function CommandCenter() {
   };
 
   useEffect(() => { load(); }, []);
+
+  const { data: domainRecords = [] } = useQuery({
+    queryKey: ['command-domains'],
+    queryFn: async () => {
+      const res = await base44.entities.Domain.filter({ status: { $in: ['active', 'onboarding'] } }, { sort: 'domain', limit: 50 });
+      return res.items || res;
+    },
+  });
 
   if (loading) {
     return (
@@ -89,6 +99,13 @@ export default function CommandCenter() {
         </div>
         <ActionQueue actions={data?.actions || []} alerts={data?.alerts || []} />
       </div>
+
+      {/* 90-Day Performance Trend */}
+      {domainRecords.length > 0 && (
+        <div className="mb-5">
+          <PerformanceTrendChart domains={domainRecords} />
+        </div>
+      )}
 
       {/* Self-Discovery + Domain Performance */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-5">

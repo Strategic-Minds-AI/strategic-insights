@@ -26,7 +26,7 @@ export default function DomainOperations() {
     if (!newDomain.trim()) return;
     setRunning(true);
     try {
-      await base44.functions.invoke('domain_run_pipeline', { domain_url: newDomain.trim() });
+      await base44.functions.invoke('domain_agent_run', { domain_url: newDomain.trim() });
       setNewDomain('');
       queryClient.invalidateQueries({ queryKey: ['domains'] });
     } finally {
@@ -37,7 +37,7 @@ export default function DomainOperations() {
   const runPipeline = async (domainId) => {
     setRunning(true);
     try {
-      await base44.functions.invoke('domain_run_pipeline', { domain_id: domainId });
+      await base44.functions.invoke('domain_agent_run', { domain_id: domainId });
       queryClient.invalidateQueries({ queryKey: ['domains'] });
     } finally {
       setRunning(false);

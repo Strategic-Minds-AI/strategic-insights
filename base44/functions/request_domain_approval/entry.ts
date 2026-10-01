@@ -1,7 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.52';
 
 const ALLOWED = new Set([
-  'SUBMIT_SITEMAP','CREATE_GA4_PROPERTIES_BULK','ADD_GSC_PROPERTY',
+  'SUBMIT_SITEMAP','CREATE_GA4_PROPERTIES_BULK','CREATE_GSC_PROPERTIES_BULK','ADD_GSC_PROPERTY',
   'VERIFY_SITE_OWNERSHIP','CREATE_GA4_STREAM','CONFIGURE_GTM',
   'PUBLISH_GTM','DNS_VERIFICATION_WRITE','PRODUCTION_RELEASE'
 ]);
@@ -28,12 +28,12 @@ export default async function(req) {
     );
 
     const existing = await svc.entities.DomainApproval.filter(
-      { idempotency_key:idempotencyKey, status:{ $in:['pending','approved','executing'] } },
+      { idempotency_key:idempotencyKey, status:{ $in:['pending','approved','executing','consumed'] } },
       { sort:'-requested_at', limit:1 }
     );
     const rows = existing.items || existing || [];
     if (rows.length) {
-      return Response.json({ ok:true, approval_required:true, reused:true, approval:rows[0] });
+      return Response.json({ ok:true, approval_required:rows[0].status !== 'consumed', reused:true, approval:rows[0] });
     }
 
     const approval = await svc.entities.DomainApproval.create({

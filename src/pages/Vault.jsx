@@ -11,6 +11,7 @@ import {
   Database, FileSpreadsheet, HardDrive, BarChart3, Search,
   Facebook, Music2, Github, Server, Cloud
 } from 'lucide-react';
+import DataExplorer from '@/components/vault/DataExplorer';
 
 const OAUTH_SOURCES = [
   { id: 'google_analytics', name: 'Google Analytics', icon: BarChart3, color: '#e8710a', category: 'Web Analytics' },
@@ -18,14 +19,15 @@ const OAUTH_SOURCES = [
   { id: 'googlesheets', name: 'Google Sheets', icon: FileSpreadsheet, color: '#0f9d58', category: 'Data' },
   { id: 'googledrive', name: 'Google Drive', icon: HardDrive, color: '#4285f4', category: 'Storage' },
   { id: 'supabase', name: 'Supabase', icon: Database, color: '#3ecf8e', category: 'Database' },
+  { id: 'github', name: 'GitHub', icon: Github, color: '#181717', category: 'Code Storage' },
   { id: 'meta_ads', name: 'Meta Ads', icon: Facebook, color: '#1877f2', category: 'Advertising' },
   { id: 'tiktok', name: 'TikTok', icon: Music2, color: '#ff0050', category: 'Social' },
 ];
 
 const INFRA_SOURCES = [
-  { name: 'Supabase', icon: Database, color: '#3ecf8e', purpose: 'Database backend', note: 'Connect via OAuth or store URL + anon key in the vault' },
-  { name: 'GitHub', icon: Github, color: '#181717', purpose: 'Code & file storage', note: 'Workspace connector available' },
-  { name: 'Google Drive', icon: HardDrive, color: '#4285f4', purpose: 'Data files & reports', note: 'Connect via OAuth' },
+  { name: 'Supabase', icon: Database, color: '#3ecf8e', purpose: 'Database backend', note: 'Connected — 4 projects found', connected: true },
+  { name: 'GitHub', icon: Github, color: '#181717', purpose: 'Code & file storage', note: 'Connected — repos readable via MCP', connected: true },
+  { name: 'Google Drive', icon: HardDrive, color: '#4285f4', purpose: 'Data files & reports', note: 'Connected — files readable via MCP', connected: true },
   { name: 'Vercel', icon: Server, color: '#000000', purpose: 'Frontend hosting (external)', note: 'This app runs on Base44 hosting' },
 ];
 
@@ -136,6 +138,9 @@ export default function Vault() {
         </CardContent>
       </Card>
 
+      {/* Data Explorer */}
+      <DataExplorer />
+
       {/* API Key Vault */}
       <Card className="mb-6">
         <CardHeader>
@@ -228,12 +233,15 @@ export default function Vault() {
         <CardContent>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {INFRA_SOURCES.map(src => (
-              <div key={src.name} className="border rounded-lg p-4 flex items-center gap-3">
+              <div key={src.name} className={`border rounded-lg p-4 flex items-center gap-3 ${src.connected ? 'border-green-200 bg-green-50/30' : ''}`}>
                 <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: `${src.color}15` }}>
                   <src.icon className="w-5 h-5" style={{ color: src.color }} />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-medium text-sm">{src.name}</p>
+                  <div className="flex items-center gap-2">
+                    <p className="font-medium text-sm">{src.name}</p>
+                    {src.connected && <Check className="w-3 h-3 text-green-600" />}
+                  </div>
                   <p className="text-xs text-gray-400 truncate">{src.purpose}</p>
                   <p className="text-xs text-gray-400 truncate">{src.note}</p>
                 </div>

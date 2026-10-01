@@ -45,6 +45,23 @@
         "annotations": { "read_only_hint": false, "destructive_hint": false, "idempotent_hint": false }
       },
       {
+        "name": "github_read",
+        "title": "Read GitHub Repositories",
+        "description": "List your GitHub repositories, browse directory contents, and read file contents. Actions: list_repos, list_contents (needs owner, repo, optional path), read_file (needs owner, repo, path).",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "action": { "type": "string", "enum": ["list_repos", "list_contents", "read_file"], "description": "What to do" },
+            "owner": { "type": "string", "description": "Repo owner (for list_contents, read_file)" },
+            "repo": { "type": "string", "description": "Repo name (for list_contents, read_file)" },
+            "path": { "type": "string", "description": "File or directory path (for list_contents optional, read_file required)" },
+            "branch": { "type": "string", "description": "Branch name (optional)" }
+          }
+        },
+        "handler": "github_read",
+        "annotations": { "read_only_hint": true, "destructive_hint": false, "idempotent_hint": true }
+      },
+      {
         "name": "drive_list_files",
         "title": "List Google Drive Files",
         "description": "List files in the user's Google Drive, or read a specific file's content. Pass query to search by name, mime_type to filter, or file_id to read content.",

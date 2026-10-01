@@ -51,7 +51,7 @@ export default async function handler(req, res) {
               : statuses.includes('BLOCKED')
                 ? 'BLOCKED'
                 : 'PASS',
-        validator_missing:results.some(x => !x.status || !x.receipt_id),
+        validator_missing:results.some(x => !x.status || (!x.receipt_id && x.status !== 'BLOCKED')),
         summary:{
           processed_count:data.processed_count || 0,
           pass:data.pass || 0,

@@ -15,7 +15,6 @@ const ga4 = read('base44/functions/provision_ga4_properties/entry.ts');
 const gsc = read('base44/functions/provision_gsc_properties/entry.ts');
 const ga4Ui = read('src/components/command/GA4Provisioning.jsx');
 const gscUi = read('src/components/analytics/GSCProvisioningPanel.jsx');
-const heartbeatApi = read('api/reconcile.mjs');
 const runner = read('base44/functions/domain_agent_run/entry.ts');
 const reconcile = read('base44/functions/domain_agent_reconcile/entry.ts');
 const protectedExec = read('base44/functions/execute_domain_protected_action/entry.ts');
@@ -23,7 +22,7 @@ const autoResolve = read('base44/functions/auto_resolve_actions/entry.ts');
 const protectedValidator = read('base44/functions/protected_action_validator/entry.ts');
 const actionSchema = json('base44/entities/DomainAction.jsonc');
 const mcp = json('base44/mcp/config.json');
-const vercel = json('vercel.json');
+const contract = json('runtime/domain-ops-contract.json');
 
 check('agent routes scans through governed runner',
   agent.tool_configs.some(x => x.function_name === 'domain_agent_run') &&
@@ -66,9 +65,6 @@ check('runner reuses duplicate run ids',
   runner.includes('DomainExecution.filter({ run_id:runId }') &&
   runner.includes('DUPLICATE_RUN_IN_FLIGHT'));
 
-check('heartbeat permits receiptless in-flight BLOCKED status',
-  heartbeatApi.includes("x.status !== 'BLOCKED'"));
-
 check('auto resolver cannot bypass validator or protected approval',
   autoResolve.includes("functions.invoke('domain_agent_run'") &&
   autoResolve.includes("functions.invoke('request_domain_approval'") &&
@@ -91,9 +87,14 @@ check('MCP exposes governed approval lifecycle',
   ['request_domain_protected_action','list_domain_approvals','decide_domain_approval','execute_domain_protected_action']
     .every(x => names.has(x)));
 
-check('single Vercel five-minute heartbeat declared',
-  vercel.crons?.length === 1 &&
-  vercel.crons[0].path === '/api/reconcile' &&
-  vercel.crons[0].schedule === '*/5 * * * *');
+check('no app-specific scheduler remains',
+  !fs.existsSync('base44/workflows/Domain Heartbeat.jsonc') &&
+  !fs.existsSync('vercel.json'));
+
+check('ZERO is the single authoritative five-minute heartbeat',
+  contract.authoritative_scheduler?.provider === 'ZERO_CONTROL_PLANE' &&
+  contract.authoritative_scheduler?.repository === 'Strategic-Minds-AI/x1-ai-hub-control-plane' &&
+  contract.authoritative_scheduler?.path === '/api/cron/auto-builder' &&
+  contract.authoritative_scheduler?.schedule === '*/5 * * * *');
 
 if (failed) process.exit(1);

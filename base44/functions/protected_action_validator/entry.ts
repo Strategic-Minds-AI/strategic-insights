@@ -27,6 +27,10 @@ export default async function(req) {
       if (result.dry_run !== false) failures.push('GA4_EXECUTION_WAS_DRY_RUN');
       if (Number(result.failed || 0) > 0) failures.push('GA4_PROVISION_FAILURES');
     }
+    if (approval.action_type === 'CREATE_GSC_PROPERTIES_BULK') {
+      if (result.dry_run !== false) failures.push('GSC_EXECUTION_WAS_DRY_RUN');
+      if (Number(result.failed || 0) > 0) failures.push('GSC_PROVISION_FAILURES');
+    }
 
     const status = failures.length ? 'FAIL' : 'PASS';
     const receipt = await svc.entities.ProtectedActionReceipt.create({

@@ -1,8 +1,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Target, AlertCircle, ArrowRight } from 'lucide-react';
+import { Target, AlertCircle } from 'lucide-react';
 
 export default function ActionQueue({ actions, alerts }) {
   const priorityColors = {
@@ -54,3 +53,5 @@ export default function ActionQueue({ actions, alerts }) {
     </Card>
   );
 }
+
+[executed on device: JARVIS-COMMAND (68702b78-725a-4b76-878f-f1693f485414)]

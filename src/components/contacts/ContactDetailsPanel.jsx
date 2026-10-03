@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { X, Phone, Mail, MessageCircle, Building2, Calendar, Star, Activity } from 'lucide-react';
+import { X, Phone, Mail, MessageCircle, Building2, Calendar, Activity } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import moment from 'moment';
@@ -204,3 +204,5 @@ export default function ContactDetailsPanel({ contact, onClose }) {
     </div>
   );
 }
+
+[executed on device: JARVIS-COMMAND (68702b78-725a-4b76-878f-f1693f485414)]

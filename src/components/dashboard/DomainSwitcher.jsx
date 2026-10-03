@@ -1,5 +1,5 @@
 import React from 'react';
-import { Globe, ChevronRight, Check } from 'lucide-react';
+import { Globe, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export default function DomainSwitcher({ domains, selectedId, onSelect }) {
@@ -27,3 +27,5 @@ export default function DomainSwitcher({ domains, selectedId, onSelect }) {
     </div>
   );
 }
+
+[executed on device: JARVIS-COMMAND (68702b78-725a-4b76-878f-f1693f485414)]

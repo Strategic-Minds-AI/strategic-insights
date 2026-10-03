@@ -8,13 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Avatar } from '@/components/ui/avatar';
 import { Checkbox } from '@/components/ui/checkbox';
-import { 
-  TrendingUp, 
-  DollarSign, 
-  Target, 
-  Percent, 
-  Calendar,
-  CheckCircle,
+import {
   Search,
   Filter,
   MoreHorizontal,
@@ -599,3 +593,5 @@ export default function Dashboard() {
     </div>
   );
 }
+
+[executed on device: JARVIS-COMMAND (68702b78-725a-4b76-878f-f1693f485414)]

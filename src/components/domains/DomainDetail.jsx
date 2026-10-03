@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { X, Search, BarChart3, Users, Target, AlertCircle, CheckCircle, Clock, TrendingUp } from 'lucide-react';
+import { X, Search, BarChart3, Users, Target, TrendingUp } from 'lucide-react';
 
 export default function DomainDetail({ domain, onClose }) {
   const [tab, setTab] = useState('overview');
@@ -184,3 +184,5 @@ export default function DomainDetail({ domain, onClose }) {
     </div>
   );
 }
+
+[executed on device: JARVIS-COMMAND (68702b78-725a-4b76-878f-f1693f485414)]

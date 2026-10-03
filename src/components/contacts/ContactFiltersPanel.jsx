@@ -3,7 +3,6 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
-import { X } from 'lucide-react';
 
 export default function ContactFiltersPanel({ filters, onFilterChange, onClose }) {
   const handleCheckboxChange = (category, value) => {
@@ -151,3 +150,5 @@ export default function ContactFiltersPanel({ filters, onFilterChange, onClose }
     </div>
   );
 }
+
+[executed on device: JARVIS-COMMAND (68702b78-725a-4b76-878f-f1693f485414)]

@@ -5,10 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   Target, 
   TrendingUp, 
-  DollarSign, 
-  Clock, 
   TrendingDown,
-  Activity,
   Users
 } from 'lucide-react';
 import { 
@@ -395,3 +392,5 @@ export default function Reports() {
     </div>
   );
 }
+
+[executed on device: JARVIS-COMMAND (68702b78-725a-4b76-878f-f1693f485414)]

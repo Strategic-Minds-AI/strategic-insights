@@ -3,7 +3,7 @@ import GA4Provisioning from '@/components/command/GA4Provisioning';
 import GSCProvisioningPanel from '@/components/analytics/GSCProvisioningPanel';
 import TrackingGapsPanel from '@/components/analytics/TrackingGapsPanel';
 import CrossSiteComparison from '@/components/analytics/CrossSiteComparison';
-import { Factory, Globe, Search, AlertTriangle, Trophy } from 'lucide-react';
+import { Factory, Globe, AlertTriangle, Trophy } from 'lucide-react';
 
 export default function AnalyticsFactory() {
   return (
@@ -47,3 +47,5 @@ export default function AnalyticsFactory() {
     </div>
   );
 }
+
+[executed on device: JARVIS-COMMAND (68702b78-725a-4b76-878f-f1693f485414)]

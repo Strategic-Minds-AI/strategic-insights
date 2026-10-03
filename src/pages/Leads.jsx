@@ -31,7 +31,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { TrendingUp, DollarSign, CheckCircle, XCircle, Percent, Calendar } from 'lucide-react';
+import { TrendingUp, CheckCircle, XCircle, Percent, Calendar } from 'lucide-react';
 
 export default function Leads() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -450,3 +450,5 @@ export default function Leads() {
     </div>
   );
 }
+
+[executed on device: JARVIS-COMMAND (68702b78-725a-4b76-878f-f1693f485414)]

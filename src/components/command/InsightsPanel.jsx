@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Sparkles, TrendingUp, AlertTriangle, Lightbulb, ArrowRight } from 'lucide-react';
+import { Sparkles, TrendingUp, AlertTriangle, Lightbulb } from 'lucide-react';
 
 export default function InsightsPanel({ insights }) {
   if (!insights) return null;
@@ -78,3 +78,5 @@ export default function InsightsPanel({ insights }) {
     </Card>
   );
 }
+
+[executed on device: JARVIS-COMMAND (68702b78-725a-4b76-878f-f1693f485414)]

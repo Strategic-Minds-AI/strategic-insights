@@ -1,7 +1,6 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { CheckCircle, Circle, Plus, Sparkles, Database, Zap } from 'lucide-react';
 
 export default function SelfDiscovery({ discovery }) {
@@ -96,3 +95,5 @@ export default function SelfDiscovery({ discovery }) {
     </Card>
   );
 }
+
+[executed on device: JARVIS-COMMAND (68702b78-725a-4b76-878f-f1693f485414)]

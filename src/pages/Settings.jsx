@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { AlertCircle, Download, Upload, Trash2 } from 'lucide-react';
+import { AlertCircle, Download, Trash2 } from 'lucide-react';
 import ConfigListManager from '../components/settings/ConfigListManager';
 
 export default function Settings() {
@@ -340,3 +340,5 @@ export default function Settings() {
     </div>
   );
 }
+
+[executed on device: JARVIS-COMMAND (68702b78-725a-4b76-878f-f1693f485414)]

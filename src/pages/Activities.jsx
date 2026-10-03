@@ -2,9 +2,8 @@ import React, { useState, useMemo } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Plus, Search, Phone, Mail, Calendar as CalendarIcon, MessageSquare } from 'lucide-react';
+import { Phone, Mail, Calendar as CalendarIcon, MessageSquare } from 'lucide-react';
 import ActivityDialog from '../components/forms/ActivityDialog';
 import ActivityKPICard from '../components/activities/ActivityKPICard';
 import PriorityActivityItem from '../components/activities/PriorityActivityItem';
@@ -314,3 +313,5 @@ export default function Activities() {
     </div>
   );
 }
+
+[executed on device: JARVIS-COMMAND (68702b78-725a-4b76-878f-f1693f485414)]

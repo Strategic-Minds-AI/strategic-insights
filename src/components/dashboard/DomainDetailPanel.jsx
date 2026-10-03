@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Globe, FileText, Search, BarChart3, AlertCircle, CheckCircle, Clock, RefreshCw } from 'lucide-react';
 import DomainMetricGrid from './DomainMetricGrid';
@@ -125,3 +125,5 @@ export default function DomainDetailPanel({ domain, metrics, onRescan, rescannin
     </div>
   );
 }
+
+[executed on device: JARVIS-COMMAND (68702b78-725a-4b76-878f-f1693f485414)]

@@ -3,7 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, DollarSign, ListOrdered, ArrowRight } from 'lucide-react';
+import { Loader2, DollarSign, ListOrdered } from 'lucide-react';
 
 export default function RevenuePriorityQueue() {
   const [data, setData] = useState(null);
@@ -68,3 +68,5 @@ export default function RevenuePriorityQueue() {
     </Card>
   );
 }
+
+[executed on device: JARVIS-COMMAND (68702b78-725a-4b76-878f-f1693f485414)]

@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { RefreshCw, X, Send, FileText } from 'lucide-react';
+import { RefreshCw, X, FileText } from 'lucide-react';
 
 export default function BulkActionBar({ selectedCount, onClear, onCrawl, onOpenMetadata, crawling }) {
   if (selectedCount === 0) return null;
@@ -35,3 +35,5 @@ export default function BulkActionBar({ selectedCount, onClear, onCrawl, onOpenM
     </div>
   );
 }
+
+[executed on device: JARVIS-COMMAND (68702b78-725a-4b76-878f-f1693f485414)]

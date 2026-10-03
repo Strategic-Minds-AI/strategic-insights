@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Building2, Plus, ChevronDown } from 'lucide-react';
+import { Building2, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 
 export default function BusinessSwitcher({ businesses, selectedId, onSelect, onAddNew }) {
   const [open, setOpen] = useState(false);
@@ -42,3 +41,5 @@ export default function BusinessSwitcher({ businesses, selectedId, onSelect, onA
     </div>
   );
 }
+
+[executed on device: JARVIS-COMMAND (68702b78-725a-4b76-878f-f1693f485414)]

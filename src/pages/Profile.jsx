@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { User, Mail, Shield, Upload, Camera } from 'lucide-react';
+import { User, Mail, Shield, Camera } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function Profile() {
@@ -251,3 +251,5 @@ export default function Profile() {
     </div>
   );
 }
+
+[executed on device: JARVIS-COMMAND (68702b78-725a-4b76-878f-f1693f485414)]

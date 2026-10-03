@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Code2, Key, Bot, Copy, Check, Terminal, Webhook, Zap } from 'lucide-react';
+import { Code2, Bot, Copy, Check, Terminal, Webhook, Zap } from 'lucide-react';
 
 export default function DeveloperAPI() {
   const [copied, setCopied] = useState(null);
@@ -159,3 +159,5 @@ const gaps = await base44.entities.Gap.filter(
     </div>
   );
 }
+
+[executed on device: JARVIS-COMMAND (68702b78-725a-4b76-878f-f1693f485414)]

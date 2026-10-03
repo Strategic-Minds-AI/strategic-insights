@@ -2,7 +2,7 @@ import React from 'react';
 import { Avatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle2, Clock } from 'lucide-react';
+import { CheckCircle2 } from 'lucide-react';
 
 export default function PriorityActivityItem({ activity, onMarkComplete, onReschedule }) {
   const isOverdue = new Date(activity.date) < new Date();
@@ -49,3 +49,5 @@ export default function PriorityActivityItem({ activity, onMarkComplete, onResch
     </div>
   );
 }
+
+[executed on device: JARVIS-COMMAND (68702b78-725a-4b76-878f-f1693f485414)]

@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Radar, RefreshCw, DollarSign, Users, MousePointerClick, Target, Globe, TrendingUp, Award, Activity } from 'lucide-react';
+import { RefreshCw, DollarSign, Users, MousePointerClick, Target, Globe, TrendingUp, Award, Activity } from 'lucide-react';
 import Star3D from '@/components/icons/Star3D';
 import MetricCard from '@/components/command/MetricCard';
 import ActionQueue from '@/components/command/ActionQueue';
@@ -202,3 +202,5 @@ export default function CommandCenter() {
     </div>
   );
 }
+
+[executed on device: JARVIS-COMMAND (68702b78-725a-4b76-878f-f1693f485414)]
